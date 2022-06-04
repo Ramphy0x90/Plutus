@@ -1,0 +1,32 @@
+* {
+    -fx-light: #f0f0f0;
+    -fx-light1: #dee2e6;
+    -fx-dark: #adb5bd;
+    -fx-blue: #0e77ad;
+}
+
+#home {
+    -fx-background-color: -fx-light;
+}
+
+#header {
+    -fx-background-color: -fx-blue;
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.8), 10, 0, 0, 0);
+}
+
+#mainTitle {
+    -fx-font-size: 20px;
+}
+
+.text-light {
+    -fx-text-fill: -fx-light;
+}
+
+#body {
+    -fx-background-color: -fx-light1;
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.8), 10, 0, 0, 0);
+}
+
+#leftMenu {
+    -fx-background-color: -fx-dark;
+}
