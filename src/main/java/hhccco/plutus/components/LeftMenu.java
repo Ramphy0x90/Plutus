@@ -1,5 +1,6 @@
 package hhccco.plutus.components;
 
+import hhccco.plutus.controllers.LeftMenuButtonController;
 import javafx.geometry.Insets;
 import javafx.geometry.Orientation;
 import javafx.scene.Node;
@@ -12,12 +13,15 @@ import java.util.HashMap;
 public class LeftMenu extends VBox {
     HashMap<String, Node> nodesObjects = new HashMap<>();
     final String[] buttonsText = {"Nuovo", "Salva", "Banche", "CC"};
+    public HashMap<String, Node> parentNodes;
 
-    public LeftMenu() {
+    public LeftMenu(HashMap<String, Node> parentNodes) {
         this.setId("leftMenu");
         this.setPrefWidth(200);
         this.setSpacing(5);
         this.setPadding(new Insets(10));
+
+        this.parentNodes = parentNodes;
 
         initNodes();
         addChildren();
@@ -33,6 +37,7 @@ public class LeftMenu extends VBox {
             Button newButton = new Button(btnText);
             newButton.getStyleClass().add("leftMenuBtn");
             newButton.setPrefWidth(100);
+            newButton.setOnAction(new LeftMenuButtonController(parentNodes.get("tableData")));
 
             nodesObjects.put(btnText.toLowerCase() + "Btn", newButton);
         }

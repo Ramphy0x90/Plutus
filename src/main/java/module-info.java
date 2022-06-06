@@ -10,6 +10,7 @@ module hhccco.plutus {
     requires eu.hansolo.tilesfx;
 
     opens hhccco.plutus to javafx.fxml;
+    opens hhccco.plutus.models to javafx.base;
     exports hhccco.plutus;
     exports hhccco.plutus.controllers;
     opens hhccco.plutus.controllers to javafx.fxml;
