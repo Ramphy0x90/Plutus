@@ -5,6 +5,7 @@ import hhccco.plutus.views.MovementInsertForm;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.Node;
+import javafx.scene.control.Button;
 import javafx.scene.control.TableView;
 
 public class LeftMenuButtonController implements EventHandler<ActionEvent> {
@@ -14,9 +15,17 @@ public class LeftMenuButtonController implements EventHandler<ActionEvent> {
     }
     @Override
     public void handle(ActionEvent actionEvent) {
-        new MovementInsertForm();
+        String btnLabel = ((Button) actionEvent.getSource()).getText();
 
-        TableDataModel newEntry = new TableDataModel("Test movimento", "123", "1000'000", "300");
-        tableData.getItems().addAll(newEntry);
+        switch(btnLabel) {
+            case "Nuovo":
+                new MovementInsertForm(tableData.getItems());
+
+                break;
+            case "Banche":
+                break;
+            case "CC":
+                break;
+        }
     }
 }

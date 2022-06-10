@@ -12,7 +12,7 @@ import java.util.HashMap;
 
 public class LeftMenu extends VBox {
     HashMap<String, Node> nodesObjects = new HashMap<>();
-    final String[] buttonsText = {"Nuovo", "Salva", "Banche", "CC"};
+    final String[] buttonsText = {"Nuovo", "Banche", "CC"};
     public HashMap<String, Node> parentNodes;
 
     public LeftMenu(HashMap<String, Node> parentNodes) {
@@ -48,7 +48,6 @@ public class LeftMenu extends VBox {
         this.getChildren().add(nodesObjects.get("separator"));
 
         this.getChildren().add(nodesObjects.get("nuovoBtn"));
-        this.getChildren().add(nodesObjects.get("salvaBtn"));
         this.getChildren().add(nodesObjects.get("bancheBtn"));
         this.getChildren().add(nodesObjects.get("ccBtn"));
     }
