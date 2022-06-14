@@ -1,6 +1,5 @@
 package hhccco.plutus.controllers;
 
-import hhccco.plutus.models.TableDataModel;
 import hhccco.plutus.views.MovementInsertForm;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
