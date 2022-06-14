@@ -1,18 +1,31 @@
 package hhccco.plutus.components;
 
+import hhccco.plutus.models.TableDataModel;
+import hhccco.plutus.util.DBconnection;
 import javafx.scene.Node;
+import javafx.scene.control.TableView;
 import javafx.scene.layout.*;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.time.LocalDate;
 import java.util.HashMap;
 
 public class Body extends GridPane {
-    HashMap<String, Node> nodesObjects = new HashMap<>();
+    public static final DBconnection dbConn = new DBconnection();
+    static HashMap<String, Node> nodesObjects = new HashMap<>();
 
     public Body() {
         this.setId("body");
 
         setStruct();
         initNodes();
+
+        try {
+            populateDataTable();
+        } catch (SQLException e){
+            System.err.println("SQLite error: \n\t" + e);
+        }
 
         this.add(nodesObjects.get("leftMenu"), 0, 0);
         this.add(nodesObjects.get("tableData"), 1, 0);
@@ -35,10 +48,24 @@ public class Body extends GridPane {
 
     private void initNodes() {
         nodesObjects.put("tableData", new TableData().getTable());
-        nodesObjects.put("leftMenu", new LeftMenu(this.nodesObjects));
+        nodesObjects.put("leftMenu", new LeftMenu());
     }
 
-    public HashMap<String, Node> getNodes() {
-        return nodesObjects;
+    public static void populateDataTable() throws SQLException {
+        TableView tableData = ((TableView) nodesObjects.get("tableData"));
+        tableData.getItems().clear();
+
+        ResultSet rs = dbConn.getMovements();
+        while(rs.next()) {
+            TableDataModel newEntry = new TableDataModel(
+                    LocalDate.parse(rs.getString("date")),
+                    rs.getString("movement"),
+                    rs.getString("cc"),
+                    rs.getDouble("deposit"),
+                    rs.getDouble("withdrawal")
+            );
+
+            tableData.getItems().add(newEntry);
+        }
     }
 }

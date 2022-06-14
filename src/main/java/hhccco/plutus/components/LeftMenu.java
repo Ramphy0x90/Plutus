@@ -15,13 +15,13 @@ public class LeftMenu extends VBox {
     final String[] buttonsText = {"Nuovo", "Banche", "CC"};
     public HashMap<String, Node> parentNodes;
 
-    public LeftMenu(HashMap<String, Node> parentNodes) {
+    public LeftMenu() {
         this.setId("leftMenu");
         this.setPrefWidth(200);
         this.setSpacing(5);
         this.setPadding(new Insets(10));
 
-        this.parentNodes = parentNodes;
+        this.parentNodes = Body.nodesObjects;
 
         initNodes();
         addChildren();
@@ -39,7 +39,7 @@ public class LeftMenu extends VBox {
             Button newButton = new Button(btnText);
             newButton.getStyleClass().add("leftMenuBtn");
             newButton.setPrefWidth(this.getPrefWidth());
-            newButton.setOnAction(new LeftMenuButtonController(parentNodes.get("tableData")));
+            newButton.setOnAction(new LeftMenuButtonController(nodesObjects, parentNodes.get("tableData")));
 
             nodesObjects.put(btnText.toLowerCase() + "Btn", newButton);
         }

@@ -1,15 +1,20 @@
 package hhccco.plutus.controllers;
 
-import hhccco.plutus.views.MovementInsertForm;
+import hhccco.plutus.views.MovementForm;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
+import javafx.scene.control.DatePicker;
 import javafx.scene.control.TableView;
 
+import java.util.HashMap;
+
 public class LeftMenuButtonController implements EventHandler<ActionEvent> {
+    private HashMap<String, Node> leftMenuObjects;
     private TableView tableData;
-    public LeftMenuButtonController(Node tableData) {
+    public LeftMenuButtonController(HashMap<String, Node> leftMenuObjects, Node tableData) {
+        this.leftMenuObjects = leftMenuObjects;
         this.tableData = (TableView) tableData;
     }
     @Override
@@ -18,7 +23,8 @@ public class LeftMenuButtonController implements EventHandler<ActionEvent> {
 
         switch(btnLabel) {
             case "Nuovo":
-                new MovementInsertForm(tableData.getItems());
+                DatePicker date = (DatePicker) leftMenuObjects.get("datePicker");
+                new MovementForm(date.getValue());
 
                 break;
             case "Banche":

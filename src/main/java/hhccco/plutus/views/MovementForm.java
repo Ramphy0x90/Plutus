@@ -1,39 +1,36 @@
 package hhccco.plutus.views;
 
-import hhccco.plutus.models.TableDataModel;
-import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
+import hhccco.plutus.controllers.CRUDformController;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
+import java.time.LocalDate;
 import java.util.HashMap;
 
-public class MovementInsertForm extends GridPane {
+public class MovementForm extends GridPane {
     private Stage stage;
     private Scene scene;
     private HBox btnGroup;
-    HashMap<String, Node> nodesObjects = new HashMap<>();
+    public LocalDate movementDate;
+    public HashMap<String, Node> nodesObjects = new HashMap<>();
     private String[] optionLabels = {"Movimento", "CC", "Versamento", "Prelevamento"};
-    private ObservableList tableDataItems;
 
-    public MovementInsertForm(ObservableList tableDataItems) {
+    public MovementForm(LocalDate value) {
         this.setVgap(18);
         this.setPadding(new Insets(10));
 
         this.setAlignment(Pos.CENTER);
 
-        this.tableDataItems = tableDataItems;
+        this.movementDate = value;
 
         setStruct();
         initNodes();
@@ -70,7 +67,7 @@ public class MovementInsertForm extends GridPane {
         Button saveBtn = new Button("Salva");
         Button cancelBtn = new Button("Cancella");
 
-        saveBtn.setOnAction(event -> this.saveData());
+        saveBtn.setOnAction(new CRUDformController(this));
         cancelBtn.setOnAction(event -> this.stage.close());
 
         btnGroup.getChildren().addAll(saveBtn, cancelBtn);
@@ -78,14 +75,7 @@ public class MovementInsertForm extends GridPane {
         this.add(btnGroup, 0, optionLabels.length + 1);
     }
 
-    private void saveData() {
-        TableDataModel newEntry = new TableDataModel(
-                ((TextField) nodesObjects.get("movimentoInput")).getText(),
-                ((TextField) nodesObjects.get("ccInput")).getText(),
-                ((TextField) nodesObjects.get("versamentoInput")).getText(),
-                ((TextField) nodesObjects.get("prelevamentoInput")).getText()
-        );
-        this.tableDataItems.add(newEntry);
+    public void closeWindow() {
         this.stage.close();
     }
 }
