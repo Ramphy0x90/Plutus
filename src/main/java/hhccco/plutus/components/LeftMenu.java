@@ -30,13 +30,15 @@ public class LeftMenu extends VBox {
     private void initNodes(){
         nodesObjects.put("dateLabel", new Label("Data"));
         nodesObjects.put("datePicker", new DatePicker());
-        ((DatePicker) nodesObjects.get("datePicker")).setValue(LocalDate.now());
         nodesObjects.put("separator", new Separator(Orientation.HORIZONTAL));
+
+        ((DatePicker) nodesObjects.get("datePicker")).setValue(LocalDate.now());
+        nodesObjects.get("dateLabel").getStyleClass().add("sub-title");
 
         for(String btnText: buttonsText){
             Button newButton = new Button(btnText);
             newButton.getStyleClass().add("leftMenuBtn");
-            newButton.setPrefWidth(100);
+            newButton.setPrefWidth(this.getPrefWidth());
             newButton.setOnAction(new LeftMenuButtonController(parentNodes.get("tableData")));
 
             nodesObjects.put(btnText.toLowerCase() + "Btn", newButton);

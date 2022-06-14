@@ -29,7 +29,7 @@ public class Home extends GridPane {
         RowConstraints bodyRow = new RowConstraints();
 
         mainColumn.setPercentWidth(100);
-        headerRow.setPrefHeight(56);
+        headerRow.setPrefHeight(60);
         bodyRow.setVgrow(Priority.ALWAYS);
 
         this.getColumnConstraints().addAll(mainColumn);

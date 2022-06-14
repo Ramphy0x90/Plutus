@@ -10,12 +10,13 @@ public class Header extends VBox {
     public Header() {
         this.setSpacing(5);
         this.setPadding(new Insets(10));
-        this.setPrefHeight(56);
+        this.setPrefHeight(60);
 
         this.setId("header");
 
-        mainTitle.setId("mainTitle");
+        mainTitle.getStyleClass().add("main-title");
         mainTitle.getStyleClass().add("text-light");
+        subTitle.getStyleClass().add("sub-title");
         subTitle.getStyleClass().add("text-light");
 
         this.getChildren().add(mainTitle);
