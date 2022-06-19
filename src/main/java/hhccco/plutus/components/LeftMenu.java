@@ -1,7 +1,6 @@
 package hhccco.plutus.components;
 
 import hhccco.plutus.controllers.LeftMenuButtonController;
-import javafx.event.ActionEvent;
 import javafx.geometry.Insets;
 import javafx.geometry.Orientation;
 import javafx.scene.Node;
