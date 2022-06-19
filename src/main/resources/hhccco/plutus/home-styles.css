@@ -14,6 +14,15 @@
     -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.8), 10, 0, 0, 0);
 }
 
+#body {
+    -fx-background-color: -fx-light1;
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.8), 10, 0, 0, 0);
+}
+
+#leftMenu {
+    -fx-background-color: -fx-dark;
+}
+
 .main-title {
     -fx-font-size: 22px;
 }
@@ -26,11 +35,6 @@
     -fx-text-fill: -fx-light;
 }
 
-#body {
-    -fx-background-color: -fx-light1;
-    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.8), 10, 0, 0, 0);
-}
-
-#leftMenu {
-    -fx-background-color: -fx-dark;
+.separator {
+    -fx-padding: 0 10;
 }
