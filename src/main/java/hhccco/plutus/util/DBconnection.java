@@ -4,6 +4,7 @@ import hhccco.plutus.Main;
 import hhccco.plutus.models.TableDataModel;
 
 import java.sql.*;
+import java.time.LocalDate;
 
 public class DBconnection {
     Connection conn;
@@ -62,14 +63,23 @@ public class DBconnection {
     private void createStruct() throws SQLException {
         stmt = conn.createStatement();
 
+        String banksTb = "CREATE TABLE banks" +
+                "(name              TEXT        NOT NULL," +
+                "accountNumber      TEXT        NOT NULL," +
+                "accountType        TEXT        NOT NULL)";
+
         String movementTb = "CREATE TABLE movements" +
-                "(date      DATE        NOT NULL," +
-                "movement   TEXT        NOT NULL," +
-                "cc         TEXT        NOT NULL," +
-                "deposit    REAL         ," +
-                "withdrawal REAL)";
+                "(date          DATE        NOT NULL," +
+                "movement       TEXT        NOT NULL," +
+                "cc             TEXT        NOT NULL," +
+                "deposit        REAL                ," +
+                "withdrawal     REAL                ," +
+                "bankId         INTEGER     NOT NULL," +
+                "FOREIGN KEY(bankId) REFERENCES banks(rowId))";
 
         if(!checkIfTbExists("movements")) stmt.executeUpdate(movementTb);
+        if(!checkIfTbExists("banks")) stmt.executeUpdate(banksTb);
+
         stmt.close();
     }
 
@@ -102,7 +112,7 @@ public class DBconnection {
         stmt = conn.createStatement();
         rs = stmt.executeQuery("SELECT date FROM movements ORDER BY date DESC LIMIT 1");
 
-        return rs.getString("date");
+        return (rs.next()) ? rs.getString("date") : LocalDate.now().toString();
     }
 
     public void insertMovement(TableDataModel tableDataModel) throws SQLException {

@@ -1,5 +1,6 @@
 package hhccco.plutus.controllers;
 
+import hhccco.plutus.views.BankForm;
 import hhccco.plutus.views.MovementForm;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -28,6 +29,8 @@ public class LeftMenuButtonController implements EventHandler<ActionEvent> {
 
                 break;
             case "Banche":
+                new BankForm();
+
                 break;
             case "CC":
                 break;
