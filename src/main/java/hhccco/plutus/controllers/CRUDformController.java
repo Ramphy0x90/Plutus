@@ -24,15 +24,21 @@ public class CRUDformController implements EventHandler<ActionEvent> {
         switch (btnLabel) {
             case "Salva":
                 try {
+                    String deposit = ((TextField) movementForm.nodesObjects.get("versamentoInput")).getText();
+                    Double depositValue = deposit.length() == 0 ? 0 : Double.parseDouble(deposit);
+
+                    String withdrawal = ((TextField) movementForm.nodesObjects.get("prelevamentoInput")).getText();
+                    Double withdrawalValue = withdrawal.length() == 0 ? 0 : Double.parseDouble(withdrawal);
+
                     TableDataModel tableDataModel = new TableDataModel(
                             movementForm.movementDate,
                             ((TextField) movementForm.nodesObjects.get("movimentoInput")).getText(),
                             ((TextField) movementForm.nodesObjects.get("ccInput")).getText(),
-                            Double.parseDouble(((TextField) movementForm.nodesObjects.get("versamentoInput")).getText()),
-                            Double.parseDouble(((TextField) movementForm.nodesObjects.get("prelevamentoInput")).getText()));
+                            depositValue,
+                            withdrawalValue);
 
                     dbConn.insertMovement(tableDataModel);
-                    Body.populateDataTable();
+                    Body.populateDataTable(String.valueOf(movementForm.movementDate));
 
                     movementForm.closeWindow();
                 } catch (SQLException e) {

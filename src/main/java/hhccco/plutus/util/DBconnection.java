@@ -4,11 +4,11 @@ import hhccco.plutus.Main;
 import hhccco.plutus.models.TableDataModel;
 
 import java.sql.*;
-import java.util.Calendar;
 
 public class DBconnection {
     Connection conn;
-    PreparedStatement stmt = null;
+    PreparedStatement secureStmt = null;
+    Statement stmt = null;
     ResultSet rs = null;
 
     public DBconnection() {
@@ -60,7 +60,7 @@ public class DBconnection {
      * @throws SQLException general query error
      */
     private void createStruct() throws SQLException {
-        Statement stmt = conn.createStatement();
+        stmt = conn.createStatement();
 
         String movementTb = "CREATE TABLE movements" +
                 "(date      DATE        NOT NULL," +
@@ -74,7 +74,7 @@ public class DBconnection {
     }
 
     private void devSampleData() throws SQLException {
-        Statement stmt = conn.createStatement();
+        stmt = conn.createStatement();
 
         int min = 123;
         int max = 1000000;
@@ -90,23 +90,31 @@ public class DBconnection {
         stmt.close();
     }
 
-    public ResultSet getMovements() throws SQLException {
-        Statement stmt = conn.createStatement();
-        rs = stmt.executeQuery("SELECT * FROM movements");
+    public ResultSet getMovements(String date) throws SQLException {
+        secureStmt = conn.prepareStatement("SELECT * FROM movements WHERE date = ?");
+        secureStmt.setString(1, date);
+        rs = secureStmt.executeQuery();
 
         return rs;
     }
 
+    public String getMovementsLastDate() throws SQLException {
+        stmt = conn.createStatement();
+        rs = stmt.executeQuery("SELECT date FROM movements ORDER BY date DESC LIMIT 1");
+
+        return rs.getString("date");
+    }
+
     public void insertMovement(TableDataModel tableDataModel) throws SQLException {
-        stmt = conn.prepareStatement("INSERT INTO movements(date, movement, cc, deposit, withdrawal)" +
+        secureStmt = conn.prepareStatement("INSERT INTO movements(date, movement, cc, deposit, withdrawal)" +
                 "VALUES(? ,?, ?, ? ,?)");
 
-        stmt.setString(1, tableDataModel.getDate());
-        stmt.setString(2, tableDataModel.getMovimento());
-        stmt.setString(3, tableDataModel.getCc());
-        stmt.setDouble(4, tableDataModel.getVersamento());
-        stmt.setDouble(5, tableDataModel.getPrelevamento());
+        secureStmt.setString(1, tableDataModel.getDate());
+        secureStmt.setString(2, tableDataModel.getMovimento());
+        secureStmt.setString(3, tableDataModel.getCc());
+        secureStmt.setDouble(4, tableDataModel.getVersamento());
+        secureStmt.setDouble(5, tableDataModel.getPrelevamento());
 
-        stmt.executeUpdate();
+        secureStmt.executeUpdate();
     }
 }

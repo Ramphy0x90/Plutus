@@ -3,12 +3,15 @@ package hhccco.plutus.components;
 import hhccco.plutus.models.TableDataModel;
 import hhccco.plutus.util.DBconnection;
 import javafx.scene.Node;
+import javafx.scene.control.DatePicker;
 import javafx.scene.control.TableView;
 import javafx.scene.layout.*;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDate;
+import java.util.Arrays;
+import java.util.Date;
 import java.util.HashMap;
 
 public class Body extends GridPane {
@@ -51,11 +54,21 @@ public class Body extends GridPane {
         nodesObjects.put("leftMenu", new LeftMenu());
     }
 
-    public static void populateDataTable() throws SQLException {
+    public static void populateDataTable(String ...date) throws SQLException {
         TableView tableData = ((TableView) nodesObjects.get("tableData"));
         tableData.getItems().clear();
 
-        ResultSet rs = dbConn.getMovements();
+        String movementsDate;
+
+        if(date.length == 0) {
+            movementsDate = dbConn.getMovementsLastDate();
+            ((DatePicker) LeftMenu.nodesObjects.get("datePicker")).setValue(LocalDate.parse(movementsDate));
+        } else {
+            movementsDate = date[0];
+        }
+
+        ResultSet rs = dbConn.getMovements(movementsDate);
+
         while(rs.next()) {
             TableDataModel newEntry = new TableDataModel(
                     LocalDate.parse(rs.getString("date")),

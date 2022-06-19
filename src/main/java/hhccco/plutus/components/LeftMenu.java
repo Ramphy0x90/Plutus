@@ -1,17 +1,19 @@
 package hhccco.plutus.components;
 
 import hhccco.plutus.controllers.LeftMenuButtonController;
+import javafx.event.ActionEvent;
 import javafx.geometry.Insets;
 import javafx.geometry.Orientation;
 import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.layout.VBox;
 
+import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.HashMap;
 
 public class LeftMenu extends VBox {
-    HashMap<String, Node> nodesObjects = new HashMap<>();
+    static HashMap<String, Node> nodesObjects = new HashMap<>();
     final String[] buttonsText = {"Nuovo", "Banche", "CC"};
     public HashMap<String, Node> parentNodes;
 
@@ -33,6 +35,7 @@ public class LeftMenu extends VBox {
         nodesObjects.put("separator", new Separator(Orientation.HORIZONTAL));
 
         ((DatePicker) nodesObjects.get("datePicker")).setValue(LocalDate.now());
+        ((DatePicker) nodesObjects.get("datePicker")).setOnAction(event -> updateDate());
         nodesObjects.get("dateLabel").getStyleClass().add("sub-title");
 
         for(String btnText: buttonsText){
@@ -52,5 +55,15 @@ public class LeftMenu extends VBox {
         this.getChildren().add(nodesObjects.get("nuovoBtn"));
         this.getChildren().add(nodesObjects.get("bancheBtn"));
         this.getChildren().add(nodesObjects.get("ccBtn"));
+    }
+
+    private void updateDate() {
+        String newDate = String.valueOf(((DatePicker) nodesObjects.get("datePicker")).getValue());
+
+        try {
+            Body.populateDataTable(newDate);
+        } catch (SQLException e){
+            System.err.println("SQLite error: \n\t" + e);
+        }
     }
 }
