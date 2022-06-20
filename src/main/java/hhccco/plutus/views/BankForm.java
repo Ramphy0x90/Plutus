@@ -1,8 +1,11 @@
 package hhccco.plutus.views;
 
+import hhccco.plutus.controllers.BankFormController;
 import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
@@ -17,6 +20,7 @@ public class BankForm extends GridPane {
     public HashMap<String, Node> nodesObjects = new HashMap<>();
     private String[] optionLabels = {"Banca", "Numero Conto", "Tipo Conto"};
     private final VBox rightColumnLayout = new VBox();
+    private HBox btnGroup = new HBox();
 
     public BankForm() {
         setStruct();
@@ -24,6 +28,9 @@ public class BankForm extends GridPane {
 
         this.add(nodesObjects.get("banksList"), 0, 0);
         this.add(rightColumnLayout, 1, 0);
+
+        btnGroup.setSpacing(15);
+        btnGroup.setAlignment(Pos.CENTER);
 
         stage.show();
     }
@@ -54,24 +61,37 @@ public class BankForm extends GridPane {
 
     private void initNodes() {
         nodesObjects.put("banksList", new ListView<>());
+        nodesObjects.put("banksFormTitle", new Label("Inserimento banca"));
+        //((ListView)nodesObjects.get("banksList")).ed;
 
-        for(int i = 0; i < optionLabels.length; i++) {
-            Label newLabel = new Label(optionLabels[i]);
+        rightColumnLayout.getChildren().add(nodesObjects.get("banksFormTitle"));
+
+        for (String optionLabel : optionLabels) {
+            Label newLabel = new Label(optionLabel);
             TextField newTextField = new TextField();
             VBox container = new VBox();
 
             newLabel.getStyleClass().add("formLabel");
             container.getChildren().addAll(newLabel, newTextField);
 
-            nodesObjects.put(optionLabels[i].toLowerCase() + "Label", newLabel);
-            nodesObjects.put(optionLabels[i].toLowerCase() + "Input", newTextField);
+            nodesObjects.put(optionLabel.toLowerCase() + "Label", newLabel);
+            nodesObjects.put(optionLabel.toLowerCase() + "Input", newTextField);
 
             rightColumnLayout.getChildren().add(container);
         }
 
-        ((ListView) nodesObjects.get("banksList")).getItems().add("Hello");
-        ((ListView) nodesObjects.get("banksList")).getItems().add("Hello");
-        ((ListView) nodesObjects.get("banksList")).getItems().add("Hello");
-        ((ListView) nodesObjects.get("banksList")).getItems().add("Hello");
+        Button saveBtn = new Button("Salva");
+        Button cancelBtn = new Button("Cancella");
+
+        saveBtn.setOnAction(new BankFormController(this));
+        cancelBtn.setOnAction(event -> this.stage.close());
+
+        btnGroup.getChildren().addAll(saveBtn, cancelBtn);
+
+        rightColumnLayout.getChildren().add(btnGroup);
+    }
+
+    public void close() {
+        stage.close();
     }
 }

@@ -1,6 +1,7 @@
 package hhccco.plutus.util;
 
 import hhccco.plutus.Main;
+import hhccco.plutus.models.BankModel;
 import hhccco.plutus.models.TableDataModel;
 
 import java.sql.*;
@@ -108,6 +109,14 @@ public class DBconnection {
         return rs;
     }
 
+    public ResultSet getBanks() throws SQLException {
+        stmt = conn.prepareStatement("SELECT * FROM banks");
+
+        rs = secureStmt.executeQuery();
+
+        return rs;
+    }
+
     public String getMovementsLastDate() throws SQLException {
         stmt = conn.createStatement();
         rs = stmt.executeQuery("SELECT date FROM movements ORDER BY date DESC LIMIT 1");
@@ -124,6 +133,17 @@ public class DBconnection {
         secureStmt.setString(3, tableDataModel.getCc());
         secureStmt.setDouble(4, tableDataModel.getVersamento());
         secureStmt.setDouble(5, tableDataModel.getPrelevamento());
+
+        secureStmt.executeUpdate();
+    }
+
+    public void insertBank(BankModel bankModel) throws SQLException {
+        secureStmt = conn.prepareStatement("INSERT INTO banks(name, accountNumber, accountType)" +
+                "VALUES(? ,?, ?)");
+
+        secureStmt.setString(1, bankModel.getName());
+        secureStmt.setString(2, bankModel.getAccountNumber());
+        secureStmt.setString(3, bankModel.getAccountType());
 
         secureStmt.executeUpdate();
     }

@@ -1,9 +1,12 @@
 package hhccco.plutus.components;
 
+import hhccco.plutus.models.BankModel;
 import hhccco.plutus.models.TableDataModel;
 import hhccco.plutus.util.DBconnection;
 import javafx.scene.Node;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.DatePicker;
+import javafx.scene.control.ListView;
 import javafx.scene.control.TableView;
 import javafx.scene.layout.*;
 
@@ -95,6 +98,16 @@ public class Body extends GridPane {
             );
 
             tableData.getItems().add(newEntry);
+        }
+    }
+    
+    public static void populateBanks() throws SQLException {
+        ComboBox<String> banksDropdown = (ComboBox<String>) BanksHomeNavigation.nodesObjects.get("bankPicker");
+
+        ResultSet rs = dbConn.getBanks();
+
+        while(rs.next()) {
+            banksDropdown.getItems().add(rs.getString("name"));
         }
     }
 }

@@ -1,6 +1,6 @@
 package hhccco.plutus.views;
 
-import hhccco.plutus.controllers.movementFormController;
+import hhccco.plutus.controllers.MovementFormController;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
@@ -67,7 +67,7 @@ public class MovementForm extends GridPane {
         Button saveBtn = new Button("Salva");
         Button cancelBtn = new Button("Cancella");
 
-        saveBtn.setOnAction(new movementFormController(this));
+        saveBtn.setOnAction(new MovementFormController(this));
         cancelBtn.setOnAction(event -> this.stage.close());
 
         btnGroup.getChildren().addAll(saveBtn, cancelBtn);
