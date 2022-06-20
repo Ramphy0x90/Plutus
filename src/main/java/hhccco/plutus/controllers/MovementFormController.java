@@ -11,10 +11,10 @@ import javafx.scene.control.TextField;
 
 import java.sql.SQLException;
 
-public class movementFormController implements EventHandler<ActionEvent> {
+public class MovementFormController implements EventHandler<ActionEvent> {
     DBconnection dbConn = Body.dbConn;
     MovementForm movementForm;
-    public movementFormController(MovementForm movementForm) {
+    public MovementFormController(MovementForm movementForm) {
         this.movementForm = movementForm;
     }
     @Override
