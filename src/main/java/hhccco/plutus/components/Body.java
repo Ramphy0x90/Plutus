@@ -4,10 +4,7 @@ import hhccco.plutus.models.BankModel;
 import hhccco.plutus.models.TableDataModel;
 import hhccco.plutus.util.DBconnection;
 import javafx.scene.Node;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.DatePicker;
-import javafx.scene.control.ListView;
-import javafx.scene.control.TableView;
+import javafx.scene.control.*;
 import javafx.scene.layout.*;
 
 import java.sql.ResultSet;
@@ -28,6 +25,7 @@ public class Body extends GridPane {
 
         try {
             populateDataTable();
+            populateBanks();
         } catch (SQLException e){
             System.err.println("SQLite error: \n\t" + e);
         }
@@ -103,11 +101,36 @@ public class Body extends GridPane {
     
     public static void populateBanks() throws SQLException {
         ComboBox<String> banksDropdown = (ComboBox<String>) BanksHomeNavigation.nodesObjects.get("bankPicker");
+        TextField accountNumber = (TextField) BanksHomeNavigation.nodesObjects.get("accountNumberField");
+        TextField accountType = (TextField) BanksHomeNavigation.nodesObjects.get("accountTypeField");
+        boolean defaultBankSelected = false;
+
+        banksDropdown.getItems().clear();
 
         ResultSet rs = dbConn.getBanks();
 
         while(rs.next()) {
             banksDropdown.getItems().add(rs.getString("name"));
+
+            if(!defaultBankSelected) {
+                banksDropdown.getSelectionModel().selectFirst();
+                accountNumber.setText(rs.getString("accountNumber"));
+                accountType.setText(rs.getString("accountType"));
+
+                defaultBankSelected = true;
+            }
         }
+    }
+
+    public static void setDataBySelectedBank(String bankName) throws SQLException {
+        TextField accountNumber = (TextField) BanksHomeNavigation.nodesObjects.get("accountNumberField");
+        TextField accountType = (TextField) BanksHomeNavigation.nodesObjects.get("accountTypeField");
+
+        ResultSet rs = dbConn.getBanks(bankName);
+
+        System.out.println(rs.next() ? true : false);
+
+        accountNumber.setText(rs.getString("accountNumber"));
+        accountType.setText(rs.getString("accountType"));
     }
 }

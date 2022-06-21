@@ -65,7 +65,7 @@ public class DBconnection {
         stmt = conn.createStatement();
 
         String banksTb = "CREATE TABLE banks" +
-                "(name              TEXT        NOT NULL," +
+                "(name              TEXT        NOT NULL PRIMARY KEY," +
                 "accountNumber      TEXT        NOT NULL," +
                 "accountType        TEXT        NOT NULL)";
 
@@ -109,10 +109,15 @@ public class DBconnection {
         return rs;
     }
 
-    public ResultSet getBanks() throws SQLException {
-        stmt = conn.prepareStatement("SELECT * FROM banks");
-
-        rs = secureStmt.executeQuery();
+    public ResultSet getBanks(String ...bankName) throws SQLException {
+        if(bankName.length == 0) {
+            stmt = conn.createStatement();
+            rs = stmt.executeQuery("SELECT * FROM banks");
+        } else {
+            secureStmt = conn.prepareStatement("SELECT * FROM banks WHERE name = ?");
+            secureStmt.setString(1, bankName[0]);
+            rs = secureStmt.executeQuery();
+        }
 
         return rs;
     }

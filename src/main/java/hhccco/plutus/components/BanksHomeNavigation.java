@@ -6,6 +6,7 @@ import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
 
+import java.sql.SQLException;
 import java.util.HashMap;
 
 public class BanksHomeNavigation extends HBox {
@@ -29,6 +30,7 @@ public class BanksHomeNavigation extends HBox {
         nodesObjects.put("accountTypeField", new TextField());
 
         ((ComboBox<?>) nodesObjects.get("bankPicker")).setPrefWidth(150);
+        ((ComboBox<?>) nodesObjects.get("bankPicker")).setOnAction(event -> updateBank());
 
         ((TextField) nodesObjects.get("accountNumberField")).setPrefWidth(100);
         ((TextField) nodesObjects.get("accountTypeField")).setPrefWidth(100);
@@ -52,5 +54,15 @@ public class BanksHomeNavigation extends HBox {
         this.getChildren().add(separator2);
         this.getChildren().add(nodesObjects.get("accountType"));
         this.getChildren().add(nodesObjects.get("accountTypeField"));
+    }
+
+    private void updateBank() {
+        String bankName = (String) ((ComboBox<?>) nodesObjects.get("bankPicker")).getValue();
+
+        try {
+            Body.setDataBySelectedBank(bankName);
+        } catch (SQLException e){
+            System.err.println("SQLite error: \n\t" + e);
+        }
     }
 }
