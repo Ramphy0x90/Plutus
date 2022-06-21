@@ -1,6 +1,5 @@
 package hhccco.plutus.components;
 
-import hhccco.plutus.models.BankModel;
 import hhccco.plutus.models.TableDataModel;
 import hhccco.plutus.util.DBconnection;
 import javafx.scene.Node;
@@ -24,8 +23,8 @@ public class Body extends GridPane {
         initNodes();
 
         try {
-            populateDataTable();
             populateBanks();
+            populateDataTable();
         } catch (SQLException e){
             System.err.println("SQLite error: \n\t" + e);
         }
@@ -84,7 +83,9 @@ public class Body extends GridPane {
             movementsDate = date[0];
         }
 
-        ResultSet rs = dbConn.getMovements(movementsDate);
+        String bankId = ((ComboBox<String>) BanksHomeNavigation.nodesObjects.get("bankPicker")).getValue();
+
+        ResultSet rs = dbConn.getMovements(movementsDate, bankId);
 
         while(rs.next()) {
             TableDataModel newEntry = new TableDataModel(
@@ -92,8 +93,8 @@ public class Body extends GridPane {
                     rs.getString("movement"),
                     rs.getString("cc"),
                     rs.getDouble("deposit"),
-                    rs.getDouble("withdrawal")
-            );
+                    rs.getDouble("withdrawal"),
+                    rs.getString("bankId"));
 
             tableData.getItems().add(newEntry);
         }
@@ -127,8 +128,6 @@ public class Body extends GridPane {
         TextField accountType = (TextField) BanksHomeNavigation.nodesObjects.get("accountTypeField");
 
         ResultSet rs = dbConn.getBanks(bankName);
-
-        System.out.println(rs.next() ? true : false);
 
         accountNumber.setText(rs.getString("accountNumber"));
         accountType.setText(rs.getString("accountType"));

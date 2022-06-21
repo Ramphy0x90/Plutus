@@ -1,5 +1,6 @@
 package hhccco.plutus.controllers;
 
+import hhccco.plutus.components.BanksHomeNavigation;
 import hhccco.plutus.components.Body;
 import hhccco.plutus.models.TableDataModel;
 import hhccco.plutus.util.DBconnection;
@@ -7,6 +8,7 @@ import hhccco.plutus.views.MovementForm;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.control.Button;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextField;
 
 import java.sql.SQLException;
@@ -30,12 +32,15 @@ public class MovementFormController implements EventHandler<ActionEvent> {
                     String withdrawal = ((TextField) movementForm.nodesObjects.get("prelevamentoInput")).getText();
                     Double withdrawalValue = withdrawal.length() == 0 ? 0 : Double.parseDouble(withdrawal);
 
+                    String bankId = ((ComboBox<String>) BanksHomeNavigation.nodesObjects.get("bankPicker")).getValue();
+
                     TableDataModel tableDataModel = new TableDataModel(
                             movementForm.movementDate,
                             ((TextField) movementForm.nodesObjects.get("movimentoInput")).getText(),
                             ((TextField) movementForm.nodesObjects.get("ccInput")).getText(),
                             depositValue,
-                            withdrawalValue);
+                            withdrawalValue,
+                            bankId);
 
                     dbConn.insertMovement(tableDataModel);
                     Body.populateDataTable(String.valueOf(movementForm.movementDate));

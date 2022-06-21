@@ -8,13 +8,15 @@ public class TableDataModel {
     private final String cc;
     private final Double versamento;
     private final Double prelevamento;
+    private final String bankId;
 
-    public TableDataModel(LocalDate movementDate, String movimento, String cc, Double versamento, Double prelevamento){
+    public TableDataModel(LocalDate movementDate, String movimento, String cc, Double versamento, Double prelevamento, String bankId){
         this.date = String.valueOf(movementDate);
         this.movimento = movimento;
         this.cc = cc;
         this.versamento = versamento;
         this.prelevamento = prelevamento;
+        this.bankId = bankId;
     }
 
     public String getDate() {
@@ -36,4 +38,6 @@ public class TableDataModel {
     public double getPrelevamento() {
         return prelevamento;
     }
+
+    public String getBankId() { return bankId ;}
 }

@@ -10,7 +10,7 @@ import java.sql.SQLException;
 import java.util.HashMap;
 
 public class BanksHomeNavigation extends HBox {
-    static HashMap<String, Node> nodesObjects = new HashMap<>();
+    public static HashMap<String, Node> nodesObjects = new HashMap<>();
 
     public BanksHomeNavigation() {
         this.setId("banksHomeNavigation");
@@ -61,6 +61,7 @@ public class BanksHomeNavigation extends HBox {
 
         try {
             Body.setDataBySelectedBank(bankName);
+            Body.populateDataTable();
         } catch (SQLException e){
             System.err.println("SQLite error: \n\t" + e);
         }

@@ -1,5 +1,6 @@
 package hhccco.plutus.views;
 
+import hhccco.plutus.components.Body;
 import hhccco.plutus.controllers.BankFormController;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -12,6 +13,8 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.*;
 import javafx.stage.Stage;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.HashMap;
 
 public class BankForm extends GridPane {
@@ -25,6 +28,7 @@ public class BankForm extends GridPane {
     public BankForm() {
         setStruct();
         initNodes();
+        setBanksOptions();
 
         this.add(nodesObjects.get("banksList"), 0, 0);
         this.add(rightColumnLayout, 1, 0);
@@ -62,7 +66,6 @@ public class BankForm extends GridPane {
     private void initNodes() {
         nodesObjects.put("banksList", new ListView<>());
         nodesObjects.put("banksFormTitle", new Label("Inserimento banca"));
-        //((ListView)nodesObjects.get("banksList")).ed;
 
         rightColumnLayout.getChildren().add(nodesObjects.get("banksFormTitle"));
 
@@ -89,6 +92,18 @@ public class BankForm extends GridPane {
         btnGroup.getChildren().addAll(saveBtn, cancelBtn);
 
         rightColumnLayout.getChildren().add(btnGroup);
+    }
+
+    private void setBanksOptions() {
+        try {
+            ResultSet rs = Body.dbConn.getBanks();
+
+            while(rs.next()) {
+                ((ListView)nodesObjects.get("banksList")).getItems().add(rs.getString("name"));
+            }
+        } catch (SQLException e){
+            System.err.println("SQLite error: \n\t" + e);
+        }
     }
 
     public void close() {

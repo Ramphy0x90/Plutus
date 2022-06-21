@@ -75,7 +75,7 @@ public class DBconnection {
                 "cc             TEXT        NOT NULL," +
                 "deposit        REAL                ," +
                 "withdrawal     REAL                ," +
-                "bankId         INTEGER     NOT NULL," +
+                "bankId         TEXT        NOT NULL," +
                 "FOREIGN KEY(bankId) REFERENCES banks(rowId))";
 
         if(!checkIfTbExists("movements")) stmt.executeUpdate(movementTb);
@@ -101,9 +101,11 @@ public class DBconnection {
         stmt.close();
     }
 
-    public ResultSet getMovements(String date) throws SQLException {
-        secureStmt = conn.prepareStatement("SELECT * FROM movements WHERE date = ?");
+    public ResultSet getMovements(String date, String bankId) throws SQLException {
+        secureStmt = conn.prepareStatement("SELECT * FROM movements WHERE date = ? AND bankId = ?");
         secureStmt.setString(1, date);
+        secureStmt.setString(2, bankId);
+
         rs = secureStmt.executeQuery();
 
         return rs;
@@ -130,14 +132,15 @@ public class DBconnection {
     }
 
     public void insertMovement(TableDataModel tableDataModel) throws SQLException {
-        secureStmt = conn.prepareStatement("INSERT INTO movements(date, movement, cc, deposit, withdrawal)" +
-                "VALUES(? ,?, ?, ? ,?)");
+        secureStmt = conn.prepareStatement("INSERT INTO movements(date, movement, cc, deposit, withdrawal, bankId)" +
+                "VALUES(? ,?, ?, ? ,?, ?)");
 
         secureStmt.setString(1, tableDataModel.getDate());
         secureStmt.setString(2, tableDataModel.getMovimento());
         secureStmt.setString(3, tableDataModel.getCc());
         secureStmt.setDouble(4, tableDataModel.getVersamento());
         secureStmt.setDouble(5, tableDataModel.getPrelevamento());
+        secureStmt.setString(6, tableDataModel.getBankId());
 
         secureStmt.executeUpdate();
     }
