@@ -3,6 +3,7 @@ package hhccco.plutus.models;
 import java.time.LocalDate;
 
 public class TableDataModel {
+    private int id;
     private final String date;
     private final String movimento;
     private final String cc;
@@ -17,6 +18,14 @@ public class TableDataModel {
         this.versamento = versamento;
         this.prelevamento = prelevamento;
         this.bankId = bankId;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public int getId() {
+        return id;
     }
 
     public String getDate() {

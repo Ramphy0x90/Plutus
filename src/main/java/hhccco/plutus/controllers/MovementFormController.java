@@ -2,13 +2,16 @@ package hhccco.plutus.controllers;
 
 import hhccco.plutus.components.BanksHomeNavigation;
 import hhccco.plutus.components.Body;
+import hhccco.plutus.components.LeftMenu;
 import hhccco.plutus.models.TableDataModel;
 import hhccco.plutus.util.DBconnection;
 import hhccco.plutus.views.MovementForm;
+import hhccco.plutus.views.MovementUpdateForm;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.DatePicker;
 import javafx.scene.control.TextField;
 
 import java.sql.SQLException;
@@ -16,8 +19,12 @@ import java.sql.SQLException;
 public class MovementFormController implements EventHandler<ActionEvent> {
     DBconnection dbConn = Body.dbConn;
     MovementForm movementForm;
+    MovementUpdateForm movementUpdateForm;
     public MovementFormController(MovementForm movementForm) {
         this.movementForm = movementForm;
+    }
+    public MovementFormController(MovementUpdateForm movementUpdateForm) {
+        this.movementUpdateForm = movementUpdateForm;
     }
     @Override
     public void handle(ActionEvent actionEvent) {
@@ -51,6 +58,34 @@ public class MovementFormController implements EventHandler<ActionEvent> {
                 }
                 break;
             case "Aggiorna":
+                try {
+                    String deposit = ((TextField) movementUpdateForm.nodesObjects.get("versamentoInput")).getText();
+                    Double depositValue = deposit.length() == 0 ? 0 : Double.parseDouble(deposit);
+
+                    String withdrawal = ((TextField) movementUpdateForm.nodesObjects.get("prelevamentoInput")).getText();
+                    Double withdrawalValue = withdrawal.length() == 0 ? 0 : Double.parseDouble(withdrawal);
+
+                    DatePicker date = (DatePicker) LeftMenu.nodesObjects.get("datePicker");
+                    String bankId = ((ComboBox<String>) BanksHomeNavigation.nodesObjects.get("bankPicker")).getValue();
+
+                    TableDataModel tableDataModel = new TableDataModel(
+                            date.getValue(),
+                            ((TextField) movementUpdateForm.nodesObjects.get("movimentoInput")).getText(),
+                            ((TextField) movementUpdateForm.nodesObjects.get("ccInput")).getText(),
+                            depositValue,
+                            withdrawalValue,
+                            bankId);
+
+                    tableDataModel.setId(movementUpdateForm.id);
+
+                    dbConn.updateMovement(tableDataModel);
+                    Body.populateDataTable(String.valueOf(date));
+
+                    movementUpdateForm.closeWindow();
+                } catch (SQLException e) {
+                    System.out.println("SQLite INSERT error: " + e);
+                }
+
                 break;
         }
     }

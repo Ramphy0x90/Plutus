@@ -2,6 +2,8 @@ package hhccco.plutus.components;
 
 import hhccco.plutus.models.TableDataModel;
 import hhccco.plutus.util.DBconnection;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
@@ -13,8 +15,10 @@ import java.util.HashMap;
 
 public class Body extends GridPane {
     public static final DBconnection dbConn = new DBconnection();
-    static HashMap<String, Node> nodesObjects = new HashMap<>();
+    public static HashMap<String, Node> nodesObjects = new HashMap<>();
     private final GridPane centerColumnLayout = new GridPane();
+    private final HBox footer = new HBox();
+    private static Label totalLabel = new Label();
 
     public Body() {
         this.setId("body");
@@ -31,6 +35,7 @@ public class Body extends GridPane {
 
         centerColumnLayout.add(nodesObjects.get("banksNavigation"), 0, 0);
         centerColumnLayout.add(nodesObjects.get("tableData"), 0, 1);
+        centerColumnLayout.add(nodesObjects.get("footer"), 0, 2);
 
         this.add(nodesObjects.get("leftMenu"), 0, 0);
         this.add(centerColumnLayout, 1, 0);
@@ -55,18 +60,27 @@ public class Body extends GridPane {
 
         RowConstraints rowTop = new RowConstraints();
 
+        RowConstraints rowCenter = new RowConstraints();
+        rowCenter.setVgrow(Priority.ALWAYS);
+
         RowConstraints rowBottom = new RowConstraints();
-        rowBottom.setVgrow(Priority.ALWAYS);
 
         centerColumnLayout.getColumnConstraints().add(mainColumn);
         centerColumnLayout.getRowConstraints().add(rowTop);
+        centerColumnLayout.getRowConstraints().add(rowCenter);
         centerColumnLayout.getRowConstraints().add(rowBottom);
+
+        footer.setAlignment(Pos.CENTER_RIGHT);
+        footer.setSpacing(5);
+        footer.setPadding(new Insets(15));
+        footer.getChildren().addAll(Body.totalLabel);
     }
 
     private void initNodes() {
         nodesObjects.put("leftMenu", new LeftMenu());
         nodesObjects.put("banksNavigation", new BanksHomeNavigation());
         nodesObjects.put("tableData", new TableData().getTable());
+        nodesObjects.put("footer", footer);
     }
 
     public static void populateDataTable(String ...date) throws SQLException {
@@ -74,6 +88,7 @@ public class Body extends GridPane {
         tableData.getItems().clear();
 
         String movementsDate;
+        double total = 0.0;
 
         if(date.length == 0) {
             movementsDate = dbConn.getMovementsLastDate();
@@ -96,8 +111,15 @@ public class Body extends GridPane {
                     rs.getDouble("withdrawal"),
                     rs.getString("bankId"));
 
+            newEntry.setId(rs.getInt("rowId"));
+
+            total -= rs.getDouble("withdrawal");
+            total += rs.getDouble("deposit");
+
             tableData.getItems().add(newEntry);
         }
+
+        Body.totalLabel.setText("Totale: " + total);
     }
     
     public static void populateBanks() throws SQLException {

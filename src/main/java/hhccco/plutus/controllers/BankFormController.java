@@ -7,6 +7,7 @@ import hhccco.plutus.views.BankForm;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.control.Button;
+import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
 
 import java.sql.SQLException;
@@ -39,7 +40,43 @@ public class BankFormController implements EventHandler<ActionEvent> {
                 } catch (SQLException e) {
                     System.out.println("SQLite INSERT error: " + e);
                 }
-            break;
+
+                break;
+
+            case "Aggiorna":
+                try {
+                    String oldBankId = (String) ((ListView)bankForm.nodesObjects.get("banksList")).getSelectionModel().getSelectedItem();
+
+                    BankModel bankModel = new BankModel(
+                            ((TextField) bankForm.nodesObjects.get("bancaInput")).getText(),
+                            ((TextField) bankForm.nodesObjects.get("numero contoInput")).getText(),
+                            ((TextField) bankForm.nodesObjects.get("tipo contoInput")).getText()
+                    );
+
+                    dbConn.updateBank(oldBankId, bankModel);
+                    Body.populateBanks();
+                    bankForm.setBanksOptions();
+
+                    bankForm.close();
+                } catch (SQLException e) {
+                    System.out.println("SQLite UPDATE error: " + e);
+                }
+
+                break;
+            case "Rimuovi":
+                try {
+                    String bankId = (String) ((ListView)bankForm.nodesObjects.get("banksList")).getSelectionModel().getSelectedItem();
+
+                    dbConn.removeBank(bankId);
+                    Body.populateBanks();
+                    bankForm.setBanksOptions();
+
+                    bankForm.close();
+                } catch (SQLException e) {
+                    System.out.println("SQLite UPDATE error: " + e);
+                }
+
+                break;
         }
     }
 }

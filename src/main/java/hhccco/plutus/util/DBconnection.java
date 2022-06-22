@@ -18,6 +18,7 @@ public class DBconnection {
             checkDriver();
             setConnection();
             createStruct();
+            devSampleData();
         } catch (ClassNotFoundException | SQLException e) {
             System.err.println("SQLite error: \n\t" + e);
         }
@@ -94,15 +95,15 @@ public class DBconnection {
         int ranNum2 = (int) Math.floor(Math.random() * (min - max + 1) + min);
 
         for(int i = 0; i < 10; i++) {
-            stmt.executeUpdate("INSERT INTO movements(date, movement, cc, deposit, withdrawal)" +
-                    "VALUES('2022-01-01', 'Movement" + i + "', 'IDK', " + ranNum1 + ", " + ranNum2 + ")");
+            stmt.executeUpdate("INSERT INTO movements(date, movement, cc, deposit, withdrawal, bankId)" +
+                    "VALUES('2022-01-01', 'Movement" + i + "', 'IDK', " + ranNum1 + ", " + ranNum2 + ", 'TEST')");
         }
 
         stmt.close();
     }
 
     public ResultSet getMovements(String date, String bankId) throws SQLException {
-        secureStmt = conn.prepareStatement("SELECT * FROM movements WHERE date = ? AND bankId = ?");
+        secureStmt = conn.prepareStatement("SELECT rowId, * FROM movements WHERE date = ? AND bankId = ?");
         secureStmt.setString(1, date);
         secureStmt.setString(2, bankId);
 
@@ -145,6 +146,19 @@ public class DBconnection {
         secureStmt.executeUpdate();
     }
 
+    public void updateMovement(TableDataModel tableDataModel) throws SQLException {
+        secureStmt = conn.prepareStatement("UPDATE movements SET movement = ?, cc = ?, deposit = ?, withdrawal = ?, bankId = ? WHERE rowId = ?");
+        System.out.println(tableDataModel.getId());
+        secureStmt.setString(1, tableDataModel.getMovimento());
+        secureStmt.setString(2, tableDataModel.getCc());
+        secureStmt.setDouble(3, tableDataModel.getVersamento());
+        secureStmt.setDouble(4, tableDataModel.getPrelevamento());
+        secureStmt.setString(5, tableDataModel.getBankId());
+        secureStmt.setInt(6, tableDataModel.getId());
+
+        secureStmt.executeUpdate();
+    }
+
     public void insertBank(BankModel bankModel) throws SQLException {
         secureStmt = conn.prepareStatement("INSERT INTO banks(name, accountNumber, accountType)" +
                 "VALUES(? ,?, ?)");
@@ -154,5 +168,29 @@ public class DBconnection {
         secureStmt.setString(3, bankModel.getAccountType());
 
         secureStmt.executeUpdate();
+    }
+
+    public void updateBank(String oldBankId, BankModel bankModel) throws SQLException {
+        secureStmt = conn.prepareStatement("UPDATE banks SET name = ?, accountNumber = ?, accountType = ? WHERE name = ?");
+
+        secureStmt.setString(1, bankModel.getName());
+        secureStmt.setString(2, bankModel.getAccountNumber());
+        secureStmt.setString(3, bankModel.getAccountType());
+        secureStmt.setString(4, oldBankId);
+
+        secureStmt.executeUpdate();
+
+        secureStmt = conn.prepareStatement("UPDATE movements SET bankId = ? WHERE bankId = ?");
+        secureStmt.setString(1, bankModel.getName());
+        secureStmt.setString(2, oldBankId);
+
+        secureStmt.executeUpdate();
+    }
+
+    public void removeBank(String bankId) throws SQLException {
+        secureStmt = conn.prepareStatement("DELETE FROM banks WHERE name = ?");
+        secureStmt.setString(1, bankId);
+
+        secureStmt.execute();
     }
 }

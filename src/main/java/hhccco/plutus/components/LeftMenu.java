@@ -12,8 +12,8 @@ import java.time.LocalDate;
 import java.util.HashMap;
 
 public class LeftMenu extends VBox {
-    static HashMap<String, Node> nodesObjects = new HashMap<>();
-    final String[] buttonsText = {"Nuovo", "Banche", "CC"};
+    public static HashMap<String, Node> nodesObjects = new HashMap<>();
+    final String[] buttonsText = {"Nuovo", "Modifica", "Banche", "CC"};
     public HashMap<String, Node> parentNodes;
 
     public LeftMenu() {
@@ -35,13 +35,16 @@ public class LeftMenu extends VBox {
 
         ((DatePicker) nodesObjects.get("datePicker")).setValue(LocalDate.now());
         ((DatePicker) nodesObjects.get("datePicker")).setOnAction(event -> updateDate());
+
+        nodesObjects.put("constLabel", new Label("Costanti"));
         nodesObjects.get("dateLabel").getStyleClass().add("sub-title");
+        nodesObjects.get("constLabel").getStyleClass().add("sub-title");
 
         for(String btnText: buttonsText){
             Button newButton = new Button(btnText);
             newButton.getStyleClass().add("leftMenuBtn");
             newButton.setPrefWidth(this.getPrefWidth());
-            newButton.setOnAction(new LeftMenuButtonController(nodesObjects, parentNodes.get("tableData")));
+            newButton.setOnAction(new LeftMenuButtonController(nodesObjects));
 
             nodesObjects.put(btnText.toLowerCase() + "Btn", newButton);
         }
@@ -52,6 +55,9 @@ public class LeftMenu extends VBox {
         this.getChildren().add(nodesObjects.get("separator"));
 
         this.getChildren().add(nodesObjects.get("nuovoBtn"));
+        this.getChildren().add(nodesObjects.get("modificaBtn"));
+
+        this.getChildren().add(nodesObjects.get("constLabel"));
         this.getChildren().add(nodesObjects.get("bancheBtn"));
         this.getChildren().add(nodesObjects.get("ccBtn"));
     }
