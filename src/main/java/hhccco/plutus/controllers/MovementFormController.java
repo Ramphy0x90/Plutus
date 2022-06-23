@@ -79,11 +79,24 @@ public class MovementFormController implements EventHandler<ActionEvent> {
                     tableDataModel.setId(movementUpdateForm.id);
 
                     dbConn.updateMovement(tableDataModel);
-                    Body.populateDataTable(String.valueOf(date));
+                    Body.populateDataTable(String.valueOf(date.getValue()));
 
                     movementUpdateForm.closeWindow();
                 } catch (SQLException e) {
-                    System.out.println("SQLite INSERT error: " + e);
+                    System.out.println("SQLite UPDATE error: " + e);
+                }
+
+                break;
+            case "Rimuovi":
+                try {
+                    DatePicker date = (DatePicker) LeftMenu.nodesObjects.get("datePicker");
+
+                    dbConn.removeMovement(movementUpdateForm.id);
+                    Body.populateDataTable(String.valueOf(date.getValue()));
+
+                    movementUpdateForm.closeWindow();
+                } catch(SQLException e) {
+                    System.out.println("SQLite DELETE error: " + e);
                 }
 
                 break;

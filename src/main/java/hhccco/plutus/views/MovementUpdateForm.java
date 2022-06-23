@@ -67,12 +67,14 @@ public class MovementUpdateForm extends GridPane {
         }
 
         Button saveBtn = new Button("Aggiorna");
-        Button cancelBtn = new Button("Cancella");
+        Button cancelBtn = new Button("Annulla");
+        Button deleteBtn = new Button("Rimuovi");
 
         saveBtn.setOnAction(new MovementFormController(this));
         cancelBtn.setOnAction(event -> this.stage.close());
+        deleteBtn.setOnAction(new MovementFormController(this));
 
-        btnGroup.getChildren().addAll(saveBtn, cancelBtn);
+        btnGroup.getChildren().addAll(saveBtn, cancelBtn, deleteBtn);
 
         this.add(btnGroup, 0, optionLabels.length + 1);
     }

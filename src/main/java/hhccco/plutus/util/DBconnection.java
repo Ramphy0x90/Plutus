@@ -148,7 +148,7 @@ public class DBconnection {
 
     public void updateMovement(TableDataModel tableDataModel) throws SQLException {
         secureStmt = conn.prepareStatement("UPDATE movements SET movement = ?, cc = ?, deposit = ?, withdrawal = ?, bankId = ? WHERE rowId = ?");
-        System.out.println(tableDataModel.getId());
+
         secureStmt.setString(1, tableDataModel.getMovimento());
         secureStmt.setString(2, tableDataModel.getCc());
         secureStmt.setDouble(3, tableDataModel.getVersamento());
@@ -157,6 +157,13 @@ public class DBconnection {
         secureStmt.setInt(6, tableDataModel.getId());
 
         secureStmt.executeUpdate();
+    }
+
+    public void removeMovement(int movementId) throws SQLException {
+        secureStmt = conn.prepareStatement("DELETE FROM movements WHERE rowId = ?");
+        secureStmt.setInt(1, movementId);
+
+        secureStmt.execute();
     }
 
     public void insertBank(BankModel bankModel) throws SQLException {
