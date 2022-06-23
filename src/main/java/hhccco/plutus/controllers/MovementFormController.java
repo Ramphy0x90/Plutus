@@ -44,7 +44,7 @@ public class MovementFormController implements EventHandler<ActionEvent> {
                     TableDataModel tableDataModel = new TableDataModel(
                             movementForm.movementDate,
                             ((TextField) movementForm.nodesObjects.get("movimentoInput")).getText(),
-                            ((TextField) movementForm.nodesObjects.get("ccInput")).getText(),
+                            ((ComboBox) movementForm.nodesObjects.get("ccInput")).getValue().toString(),
                             depositValue,
                             withdrawalValue,
                             bankId);
@@ -71,7 +71,7 @@ public class MovementFormController implements EventHandler<ActionEvent> {
                     TableDataModel tableDataModel = new TableDataModel(
                             date.getValue(),
                             ((TextField) movementUpdateForm.nodesObjects.get("movimentoInput")).getText(),
-                            ((TextField) movementUpdateForm.nodesObjects.get("ccInput")).getText(),
+                            ((ComboBox) movementUpdateForm.nodesObjects.get("ccInput")).getValue().toString(),
                             depositValue,
                             withdrawalValue,
                             bankId);

@@ -2,20 +2,20 @@ package hhccco.plutus.views;
 
 import hhccco.plutus.components.Body;
 import hhccco.plutus.controllers.MovementFormController;
+import hhccco.plutus.models.CcModel;
 import hhccco.plutus.models.TableDataModel;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.TableView;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.HashMap;
 
@@ -25,7 +25,7 @@ public class MovementUpdateForm extends GridPane {
     private Scene scene;
     private HBox btnGroup;
     public HashMap<String, Node> nodesObjects = new HashMap<>();
-    private String[] optionLabels = {"Movimento", "CC", "Versamento", "Prelevamento"};
+    private String[] optionLabels = {"Movimento", "Versamento", "Prelevamento"};
 
     public MovementUpdateForm() {
         this.setVgap(18);
@@ -53,6 +53,7 @@ public class MovementUpdateForm extends GridPane {
 
     private void initNodes() {
         for(int i = 0; i < optionLabels.length; i++) {
+            int[] indexRef = {0, 2, 3};
             Label newLabel = new Label(optionLabels[i]);
             TextField newTextField = new TextField();
             VBox container = new VBox();
@@ -63,8 +64,31 @@ public class MovementUpdateForm extends GridPane {
             nodesObjects.put(optionLabels[i].toLowerCase() + "Label", newLabel);
             nodesObjects.put(optionLabels[i].toLowerCase() + "Input", newTextField);
 
-            this.add(container, 0, i);
+            this.add(container, 0, indexRef[i]);
         }
+
+        Label newLabel = new Label("CC");
+        ComboBox<String> newDropDown = new ComboBox<>();
+        VBox container = new VBox();
+
+        try {
+            ResultSet rs = Body.dbConn.getCcs();
+
+            while(rs.next()) {
+                newDropDown.getItems().add(rs.getString("cc"));
+            }
+
+        } catch (SQLException e) {
+            System.out.println("SQLite CC Dropdown error: " + e);
+        }
+
+        nodesObjects.put("ccLabel", newLabel);
+        nodesObjects.put("ccInput", newDropDown);
+
+        newLabel.getStyleClass().add("formLabel");
+        container.getChildren().addAll(newLabel, newDropDown);
+
+        this.add(container, 0, 1);
 
         Button saveBtn = new Button("Aggiorna");
         Button cancelBtn = new Button("Annulla");
@@ -82,10 +106,18 @@ public class MovementUpdateForm extends GridPane {
     private void setData() {
         TableView tableData = (TableView) Body.nodesObjects.get("tableData");
         TableDataModel dataModel = (TableDataModel) tableData.getSelectionModel().getSelectedItem();
+        CcModel ccModel = null;
+        
+        try {
+            ResultSet rs = Body.dbConn.getCcs(dataModel.getCc());
+            ccModel = new CcModel(rs.getString("cc"), rs.getString("description"));
+        } catch (SQLException e) {
+            System.out.println("SQLite MOVEMENT CC error: " + e);
+        }
 
         id = dataModel.getId();
         ((TextField) nodesObjects.get("movimentoInput")).setText(dataModel.getMovimento());
-        ((TextField) nodesObjects.get("ccInput")).setText(dataModel.getCc());
+        ((ComboBox) nodesObjects.get("ccInput")).getSelectionModel().select(ccModel.getCc());
         ((TextField) nodesObjects.get("versamentoInput")).setText(Double.toString(dataModel.getVersamento()));
         ((TextField) nodesObjects.get("prelevamentoInput")).setText(Double.toString(dataModel.getPrelevamento()));
     }

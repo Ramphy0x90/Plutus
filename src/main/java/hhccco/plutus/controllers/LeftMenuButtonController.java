@@ -3,6 +3,7 @@ package hhccco.plutus.controllers;
 import hhccco.plutus.components.Body;
 import hhccco.plutus.components.LeftMenu;
 import hhccco.plutus.views.BankForm;
+import hhccco.plutus.views.CcForm;
 import hhccco.plutus.views.MovementForm;
 import hhccco.plutus.views.MovementUpdateForm;
 import javafx.event.ActionEvent;
@@ -42,6 +43,8 @@ public class LeftMenuButtonController implements EventHandler<ActionEvent> {
 
                 break;
             case "CC":
+                new CcForm();
+
                 break;
         }
     }

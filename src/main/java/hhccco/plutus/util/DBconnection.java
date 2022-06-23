@@ -2,6 +2,7 @@ package hhccco.plutus.util;
 
 import hhccco.plutus.Main;
 import hhccco.plutus.models.BankModel;
+import hhccco.plutus.models.CcModel;
 import hhccco.plutus.models.TableDataModel;
 
 import java.sql.*;
@@ -18,7 +19,6 @@ public class DBconnection {
             checkDriver();
             setConnection();
             createStruct();
-            devSampleData();
         } catch (ClassNotFoundException | SQLException e) {
             System.err.println("SQLite error: \n\t" + e);
         }
@@ -65,6 +65,10 @@ public class DBconnection {
     private void createStruct() throws SQLException {
         stmt = conn.createStatement();
 
+        String ccTb = "CREATE TABLE cc" +
+                "(cc            TEXT        NOT NULL PRIMARY KEY," +
+                "description    TEXT        NOT NULL)";
+
         String banksTb = "CREATE TABLE banks" +
                 "(name              TEXT        NOT NULL PRIMARY KEY," +
                 "accountNumber      TEXT        NOT NULL," +
@@ -81,6 +85,9 @@ public class DBconnection {
 
         if(!checkIfTbExists("movements")) stmt.executeUpdate(movementTb);
         if(!checkIfTbExists("banks")) stmt.executeUpdate(banksTb);
+        if(!checkIfTbExists("cc")) {
+            stmt.executeUpdate(ccTb);
+        }
 
         stmt.close();
     }
@@ -119,6 +126,19 @@ public class DBconnection {
         } else {
             secureStmt = conn.prepareStatement("SELECT * FROM banks WHERE name = ?");
             secureStmt.setString(1, bankName[0]);
+            rs = secureStmt.executeQuery();
+        }
+
+        return rs;
+    }
+
+    public ResultSet getCcs(String ...cc) throws SQLException {
+        if(cc.length == 0) {
+            stmt = conn.createStatement();
+            rs = stmt.executeQuery("SELECT * FROM cc");
+        } else {
+            secureStmt = conn.prepareStatement("SELECT * FROM cc WHERE cc = ?");
+            secureStmt.setString(1, cc[0]);
             rs = secureStmt.executeQuery();
         }
 
@@ -197,6 +217,39 @@ public class DBconnection {
     public void removeBank(String bankId) throws SQLException {
         secureStmt = conn.prepareStatement("DELETE FROM banks WHERE name = ?");
         secureStmt.setString(1, bankId);
+
+        secureStmt.execute();
+    }
+
+    public void insertCc(CcModel ccModel) throws SQLException {
+        secureStmt = conn.prepareStatement("INSERT INTO cc(cc, description)" +
+                "VALUES(? ,?)");
+
+        secureStmt.setString(1, ccModel.getCc());
+        secureStmt.setString(2, ccModel.getDescription());
+
+        secureStmt.executeUpdate();
+    }
+
+    public void updateCc(String oldCc, CcModel ccModel) throws SQLException {
+        secureStmt = conn.prepareStatement("UPDATE cc SET cc = ?, description = ? WHERE cc = ?");
+
+        secureStmt.setString(1, ccModel.getCc());
+        secureStmt.setString(2, ccModel.getDescription());
+        secureStmt.setString(3, oldCc);
+
+        secureStmt.executeUpdate();
+
+        secureStmt = conn.prepareStatement("UPDATE movements SET cc = ? WHERE cc = ?");
+        secureStmt.setString(1, ccModel.getCc());
+        secureStmt.setString(2, oldCc);
+
+        secureStmt.executeUpdate();
+    }
+
+    public void removeCc(String cc) throws SQLException {
+        secureStmt = conn.prepareStatement("DELETE FROM cc WHERE cc = ?");
+        secureStmt.setString(1, cc);
 
         secureStmt.execute();
     }
