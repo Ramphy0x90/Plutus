@@ -32,12 +32,19 @@ public class LeftMenu extends VBox {
         nodesObjects.put("dateLabel", new Label("Data"));
         nodesObjects.put("datePicker", new DatePicker());
         nodesObjects.put("separator", new Separator(Orientation.HORIZONTAL));
+        nodesObjects.put("separator1", new Separator(Orientation.HORIZONTAL));
 
         ((DatePicker) nodesObjects.get("datePicker")).setValue(LocalDate.now());
         ((DatePicker) nodesObjects.get("datePicker")).setOnAction(event -> updateDate());
 
+        nodesObjects.put("movementManagementLabel", new Label("Gestione movimenti"));
         nodesObjects.put("constLabel", new Label("Costanti"));
+
+        nodesObjects.get("separator").getStyleClass().add("v-separator");
+        nodesObjects.get("separator1").getStyleClass().add("v-separator");
+
         nodesObjects.get("dateLabel").getStyleClass().add("sub-title");
+        nodesObjects.get("movementManagementLabel").getStyleClass().add("sub-title");
         nodesObjects.get("constLabel").getStyleClass().add("sub-title");
 
         for(String btnText: buttonsText){
@@ -52,10 +59,14 @@ public class LeftMenu extends VBox {
     private void addChildren() {
         this.getChildren().add(nodesObjects.get("dateLabel"));
         this.getChildren().add(nodesObjects.get("datePicker"));
+
         this.getChildren().add(nodesObjects.get("separator"));
 
+        this.getChildren().add(nodesObjects.get("movementManagementLabel"));
         this.getChildren().add(nodesObjects.get("nuovoBtn"));
         this.getChildren().add(nodesObjects.get("modificaBtn"));
+
+        this.getChildren().add(nodesObjects.get("separator1"));
 
         this.getChildren().add(nodesObjects.get("constLabel"));
         this.getChildren().add(nodesObjects.get("bancheBtn"));

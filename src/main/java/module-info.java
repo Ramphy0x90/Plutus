@@ -16,7 +16,8 @@ module hhccco.plutus {
     opens hhccco.plutus.controllers to javafx.fxml;
 
     exports hhccco.plutus;
+    exports hhccco.plutus.models;
+    exports hhccco.plutus.views;
     exports hhccco.plutus.controllers;
     exports hhccco.plutus.util;
-    exports hhccco.plutus.models;
 }

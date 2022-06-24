@@ -38,3 +38,11 @@
 .separator {
     -fx-padding: 0 10;
 }
+
+.v-separator {
+    -fx-padding: 10 0;
+}
+
+.pt-space {
+    -fx-padding: 10 0 0 0;
+}
