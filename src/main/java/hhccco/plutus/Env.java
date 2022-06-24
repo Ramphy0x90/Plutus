@@ -2,6 +2,9 @@ package hhccco.plutus;
 
 import javafx.stage.Screen;
 
+/**
+ * Env class is used to global variables
+ */
 public class Env {
     private static final Screen screen = Screen.getPrimary();
 

@@ -4,7 +4,7 @@ import hhccco.plutus.components.BanksHomeNavigation;
 import hhccco.plutus.components.Body;
 import hhccco.plutus.components.LeftMenu;
 import hhccco.plutus.models.TableDataModel;
-import hhccco.plutus.util.DBconnection;
+import hhccco.plutus.util.DBConnection;
 import hhccco.plutus.views.MovementForm;
 import hhccco.plutus.views.MovementUpdateForm;
 import javafx.event.ActionEvent;
@@ -17,7 +17,7 @@ import javafx.scene.control.TextField;
 import java.sql.SQLException;
 
 public class MovementFormController implements EventHandler<ActionEvent> {
-    DBconnection dbConn = Body.dbConn;
+    DBConnection dbConn = Body.dbConn;
     MovementForm movementForm;
     MovementUpdateForm movementUpdateForm;
     public MovementFormController(MovementForm movementForm) {

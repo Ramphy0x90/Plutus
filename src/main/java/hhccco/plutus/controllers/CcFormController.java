@@ -2,7 +2,7 @@ package hhccco.plutus.controllers;
 
 import hhccco.plutus.components.Body;
 import hhccco.plutus.models.CcModel;
-import hhccco.plutus.util.DBconnection;
+import hhccco.plutus.util.DBConnection;
 import hhccco.plutus.views.CcForm;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -13,7 +13,7 @@ import javafx.scene.control.TextField;
 import java.sql.SQLException;
 
 public class CcFormController implements EventHandler<ActionEvent> {
-    DBconnection dbConn = Body.dbConn;
+    DBConnection dbConn = Body.dbConn;
     CcForm ccForm;
 
     public CcFormController(CcForm ccForm) {

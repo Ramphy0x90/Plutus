@@ -2,7 +2,7 @@ package hhccco.plutus.controllers;
 
 import hhccco.plutus.components.Body;
 import hhccco.plutus.models.BankModel;
-import hhccco.plutus.util.DBconnection;
+import hhccco.plutus.util.DBConnection;
 import hhccco.plutus.views.BankForm;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -13,7 +13,7 @@ import javafx.scene.control.TextField;
 import java.sql.SQLException;
 
 public class BankFormController implements EventHandler<ActionEvent> {
-    DBconnection dbConn = Body.dbConn;
+    DBConnection dbConn = Body.dbConn;
     BankForm bankForm;
 
     public BankFormController(BankForm bankForm) {
@@ -28,9 +28,9 @@ public class BankFormController implements EventHandler<ActionEvent> {
             case "Salva":
                 try {
                     BankModel bankModel = new BankModel(
-                            ((TextField) bankForm.nodesObjects.get("bancaInput")).getText(),
-                            ((TextField) bankForm.nodesObjects.get("numero contoInput")).getText(),
-                            ((TextField) bankForm.nodesObjects.get("tipo contoInput")).getText()
+                            ((TextField) bankForm.nodesObjects.get("bankInput")).getText(),
+                            ((TextField) bankForm.nodesObjects.get("accountNumberInput")).getText(),
+                            ((TextField) bankForm.nodesObjects.get("accountTypeInput")).getText()
                     );
 
                     dbConn.insertBank(bankModel);
@@ -48,9 +48,9 @@ public class BankFormController implements EventHandler<ActionEvent> {
                     String oldBankId = (String) ((ListView)bankForm.nodesObjects.get("banksList")).getSelectionModel().getSelectedItem();
 
                     BankModel bankModel = new BankModel(
-                            ((TextField) bankForm.nodesObjects.get("bancaInput")).getText(),
-                            ((TextField) bankForm.nodesObjects.get("numero contoInput")).getText(),
-                            ((TextField) bankForm.nodesObjects.get("tipo contoInput")).getText()
+                            ((TextField) bankForm.nodesObjects.get("bankInput")).getText(),
+                            ((TextField) bankForm.nodesObjects.get("accountNumberInput")).getText(),
+                            ((TextField) bankForm.nodesObjects.get("accountTypeInput")).getText()
                     );
 
                     dbConn.updateBank(oldBankId, bankModel);
