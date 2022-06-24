@@ -1,7 +1,7 @@
 package hhccco.plutus.components;
 
 import hhccco.plutus.models.TableDataModel;
-import hhccco.plutus.util.DBconnection;
+import hhccco.plutus.util.DBConnection;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
@@ -14,7 +14,7 @@ import java.time.LocalDate;
 import java.util.HashMap;
 
 public class Body extends GridPane {
-    public static final DBconnection dbConn = new DBconnection();
+    public static final DBConnection dbConn = new DBConnection();
     public static HashMap<String, Node> nodesObjects = new HashMap<>();
     private final GridPane centerColumnLayout = new GridPane();
     private final HBox footer = new HBox();

@@ -8,13 +8,13 @@ import hhccco.plutus.models.TableDataModel;
 import java.sql.*;
 import java.time.LocalDate;
 
-public class DBconnection {
+public class DBConnection {
     Connection conn;
     PreparedStatement secureStmt = null;
     Statement stmt = null;
     ResultSet rs = null;
 
-    public DBconnection() {
+    public DBConnection() {
         try {
             checkDriver();
             setConnection();
@@ -46,7 +46,7 @@ public class DBconnection {
     }
 
     /**
-     *
+     * Check if a table exists
      * @param tb Table name
      * @return boolean
      * @throws SQLException Error
@@ -85,30 +85,18 @@ public class DBconnection {
 
         if(!checkIfTbExists("movements")) stmt.executeUpdate(movementTb);
         if(!checkIfTbExists("banks")) stmt.executeUpdate(banksTb);
-        if(!checkIfTbExists("cc")) {
-            stmt.executeUpdate(ccTb);
-        }
+        if(!checkIfTbExists("cc")) stmt.executeUpdate(ccTb);
 
         stmt.close();
     }
 
-    private void devSampleData() throws SQLException {
-        stmt = conn.createStatement();
-
-        int min = 123;
-        int max = 1000000;
-
-        int ranNum1 = (int) Math.floor(Math.random() * (min - max + 1) + min);
-        int ranNum2 = (int) Math.floor(Math.random() * (min - max + 1) + min);
-
-        for(int i = 0; i < 10; i++) {
-            stmt.executeUpdate("INSERT INTO movements(date, movement, cc, deposit, withdrawal, bankId)" +
-                    "VALUES('2022-01-01', 'Movement" + i + "', 'IDK', " + ranNum1 + ", " + ranNum2 + ", 'TEST')");
-        }
-
-        stmt.close();
-    }
-
+    /**
+     * Method to get all movements
+     * @param date get movements from a selected date
+     * @param bankId get movements from a selected bank
+     * @return result set
+     * @throws SQLException *
+     */
     public ResultSet getMovements(String date, String bankId) throws SQLException {
         secureStmt = conn.prepareStatement("SELECT rowId, * FROM movements WHERE date = ? AND bankId = ?");
         secureStmt.setString(1, date);
@@ -119,6 +107,12 @@ public class DBconnection {
         return rs;
     }
 
+    /**
+     * Get banks
+     * @param bankName if this parameter is specified then return the specific bank
+     * @return result set
+     * @throws SQLException *
+     */
     public ResultSet getBanks(String ...bankName) throws SQLException {
         if(bankName.length == 0) {
             stmt = conn.createStatement();
@@ -132,6 +126,12 @@ public class DBconnection {
         return rs;
     }
 
+    /**
+     * Get CCs
+     * @param cc if this parameter is specified then return the specific CC
+     * @return result set
+     * @throws SQLException *
+     */
     public ResultSet getCcs(String ...cc) throws SQLException {
         if(cc.length == 0) {
             stmt = conn.createStatement();
@@ -145,6 +145,11 @@ public class DBconnection {
         return rs;
     }
 
+    /**
+     * Get the date of the last movement
+     * @return String of the date
+     * @throws SQLException *
+     */
     public String getMovementsLastDate() throws SQLException {
         stmt = conn.createStatement();
         rs = stmt.executeQuery("SELECT date FROM movements ORDER BY date DESC LIMIT 1");
@@ -152,6 +157,11 @@ public class DBconnection {
         return (rs.next()) ? rs.getString("date") : LocalDate.now().toString();
     }
 
+    /**
+     * Insert new movement
+     * @param tableDataModel model with data
+     * @throws SQLException *
+     */
     public void insertMovement(TableDataModel tableDataModel) throws SQLException {
         secureStmt = conn.prepareStatement("INSERT INTO movements(date, movement, cc, deposit, withdrawal, bankId)" +
                 "VALUES(? ,?, ?, ? ,?, ?)");
@@ -164,8 +174,15 @@ public class DBconnection {
         secureStmt.setString(6, tableDataModel.getBankId());
 
         secureStmt.executeUpdate();
+
+        secureStmt.close();
     }
 
+    /**
+     * Update movement
+     * @param tableDataModel model with new data
+     * @throws SQLException *
+     */
     public void updateMovement(TableDataModel tableDataModel) throws SQLException {
         secureStmt = conn.prepareStatement("UPDATE movements SET movement = ?, cc = ?, deposit = ?, withdrawal = ?, bankId = ? WHERE rowId = ?");
 
@@ -177,15 +194,29 @@ public class DBconnection {
         secureStmt.setInt(6, tableDataModel.getId());
 
         secureStmt.executeUpdate();
+
+        secureStmt.close();
     }
 
+    /**
+     * Remove movement
+     * @param movementId movement id to remove
+     * @throws SQLException *
+     */
     public void removeMovement(int movementId) throws SQLException {
         secureStmt = conn.prepareStatement("DELETE FROM movements WHERE rowId = ?");
         secureStmt.setInt(1, movementId);
 
         secureStmt.execute();
+
+        secureStmt.close();
     }
 
+    /**
+     * Insert new bank
+     * @param bankModel model with data
+     * @throws SQLException *
+     */
     public void insertBank(BankModel bankModel) throws SQLException {
         secureStmt = conn.prepareStatement("INSERT INTO banks(name, accountNumber, accountType)" +
                 "VALUES(? ,?, ?)");
@@ -195,8 +226,16 @@ public class DBconnection {
         secureStmt.setString(3, bankModel.getAccountType());
 
         secureStmt.executeUpdate();
+
+        secureStmt.close();
     }
 
+    /**
+     * Update bank data
+     * @param oldBankId old bank name
+     * @param bankModel model with new data
+     * @throws SQLException *
+     */
     public void updateBank(String oldBankId, BankModel bankModel) throws SQLException {
         secureStmt = conn.prepareStatement("UPDATE banks SET name = ?, accountNumber = ?, accountType = ? WHERE name = ?");
 
@@ -207,20 +246,36 @@ public class DBconnection {
 
         secureStmt.executeUpdate();
 
+        secureStmt.close();
+
         secureStmt = conn.prepareStatement("UPDATE movements SET bankId = ? WHERE bankId = ?");
         secureStmt.setString(1, bankModel.getName());
         secureStmt.setString(2, oldBankId);
 
         secureStmt.executeUpdate();
+
+        secureStmt.close();
     }
 
+    /**
+     * Remove bank
+     * @param bankId bank name
+     * @throws SQLException *
+     */
     public void removeBank(String bankId) throws SQLException {
         secureStmt = conn.prepareStatement("DELETE FROM banks WHERE name = ?");
         secureStmt.setString(1, bankId);
 
         secureStmt.execute();
+
+        secureStmt.close();
     }
 
+    /**
+     * Insert new CC
+     * @param ccModel model with data
+     * @throws SQLException *
+     */
     public void insertCc(CcModel ccModel) throws SQLException {
         secureStmt = conn.prepareStatement("INSERT INTO cc(cc, description)" +
                 "VALUES(? ,?)");
@@ -229,8 +284,16 @@ public class DBconnection {
         secureStmt.setString(2, ccModel.getDescription());
 
         secureStmt.executeUpdate();
+
+        secureStmt.close();
     }
 
+    /**
+     * Update CC
+     * @param oldCc old CC name
+     * @param ccModel model with new data
+     * @throws SQLException *
+     */
     public void updateCc(String oldCc, CcModel ccModel) throws SQLException {
         secureStmt = conn.prepareStatement("UPDATE cc SET cc = ?, description = ? WHERE cc = ?");
 
@@ -240,17 +303,28 @@ public class DBconnection {
 
         secureStmt.executeUpdate();
 
+        secureStmt.close();
+
         secureStmt = conn.prepareStatement("UPDATE movements SET cc = ? WHERE cc = ?");
         secureStmt.setString(1, ccModel.getCc());
         secureStmt.setString(2, oldCc);
 
         secureStmt.executeUpdate();
+
+        secureStmt.close();
     }
 
+    /**
+     * Remove CC
+     * @param cc cc name
+     * @throws SQLException *
+     */
     public void removeCc(String cc) throws SQLException {
         secureStmt = conn.prepareStatement("DELETE FROM cc WHERE cc = ?");
         secureStmt.setString(1, cc);
 
         secureStmt.execute();
+
+        secureStmt.close();
     }
 }
