@@ -2,6 +2,7 @@ package hhccco.plutus.views;
 
 import hhccco.plutus.components.Body;
 import hhccco.plutus.controllers.CcFormController;
+import hhccco.plutus.interfaces.Struct;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
@@ -17,15 +18,17 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.HashMap;
 
-public class CcForm extends GridPane {
+/**
+ * CcForm is the view of the form view for CRUD operations on CC
+ */
+public class CcForm extends GridPane implements Struct {
     private Stage stage;
-    private Scene scene;
     public HashMap<String, Node> nodesObjects = new HashMap<>();
-    private String[] optionLabels = {"Cc", "Descrizione"};
+    private final String[] optionLabels = {"Cc", "Descrizione"};
     private final VBox rightColumnLayout = new VBox();
-    private GridPane btnContainer = new GridPane();
-    private VBox btnGroupLeft = new VBox();
-    private VBox btnGroupRight = new VBox();
+    private final GridPane btnContainer = new GridPane();
+    private final VBox btnGroupLeft = new VBox();
+    private final VBox btnGroupRight = new VBox();
 
     Button saveBtn = new Button("Salva");
     Button cancelBtn = new Button("Annulla");
@@ -37,6 +40,7 @@ public class CcForm extends GridPane {
     public CcForm() {
         setStruct();
         initNodes();
+        setNodesEvents();
         setCcOptions();
 
         this.add(nodesObjects.get("ccList"), 0, 0);
@@ -51,17 +55,33 @@ public class CcForm extends GridPane {
         stage.show();
     }
 
-    private void setStruct() {
+    /**
+     * Set CcForm structure
+     */
+    public void setStruct() {
+        Scene scene = new Scene(this, 500, 300);
         stage = new Stage();
-        scene = new Scene(this, 500, 300);
+        stage.setScene(scene);
 
+        /*
+         mainRow is the main row of the view in CcForm
+         everything (the 2 columns and nodes) is inside this row
+         */
         RowConstraints mainRow = new RowConstraints();
         mainRow.setVgrow(Priority.ALWAYS);
 
+        /*
+        leftColumn is the left column of the layout in CcForm
+        Used for the list of CCs
+         */
         ColumnConstraints leftColumn = new ColumnConstraints();
         leftColumn.setPercentWidth(50);
         leftColumn.setHgrow(Priority.ALWAYS);
 
+        /*
+        rightColumn is the right column of the layout in CcForm
+        Used for the form
+         */
         ColumnConstraints rightColumn = new ColumnConstraints();
         rightColumn.setPercentWidth(50);
         rightColumn.setHgrow(Priority.ALWAYS);
@@ -74,18 +94,13 @@ public class CcForm extends GridPane {
         this.getColumnConstraints().add(1, rightColumn);
 
         btnContainer.getColumnConstraints().addAll(leftColumn, rightColumn);
-
-        stage.setScene(scene);
     }
 
-    private void initNodes() {
+    /**
+     * Init CcForm node objects
+     */
+    public void initNodes() {
         nodesObjects.put("ccList", new ListView<>());
-        ((ListView)nodesObjects.get("ccList")).getSelectionModel().selectedItemProperty().addListener((ObservableValue) -> {
-            if(onEdit) {
-                setSelectedCcData();
-            }
-        });
-
         nodesObjects.put("ccFormTitle", new Label("Inserimento CC"));
 
         rightColumnLayout.getChildren().add(nodesObjects.get("ccFormTitle"));
@@ -104,11 +119,6 @@ public class CcForm extends GridPane {
             rightColumnLayout.getChildren().add(container);
         }
 
-        saveBtn.setOnAction(new CcFormController(this));
-        cancelBtn.setOnAction(event -> close());
-        editBtn.setOnAction(event -> onEdit());
-        removeBtn.setOnAction(new CcFormController(this));
-
         btnGroupLeft.getChildren().addAll(saveBtn, cancelBtn);
         btnGroupRight.getChildren().addAll(editBtn);
 
@@ -118,21 +128,41 @@ public class CcForm extends GridPane {
         rightColumnLayout.getChildren().add(btnContainer);
     }
 
+    /**
+     * Set onAction node objects events
+     */
+    private void setNodesEvents() {
+        ((ListView<?>)nodesObjects.get("ccList")).getSelectionModel().selectedItemProperty().addListener((ObservableValue) -> {
+            if(onEdit) setSelectedCcData();
+        });
+
+        saveBtn.setOnAction(new CcFormController(this));
+        cancelBtn.setOnAction(event -> close());
+        editBtn.setOnAction(event -> onEdit());
+        removeBtn.setOnAction(new CcFormController(this));
+    }
+
+    /**
+     * Populate CC list
+     */
     public void setCcOptions() {
         try {
             ResultSet rs = Body.dbConn.getCcs();
-            ((ListView)nodesObjects.get("ccList")).getItems().clear();
+            ((ListView<?>)nodesObjects.get("ccList")).getItems().clear();
 
             while(rs.next()) {
-                ((ListView)nodesObjects.get("ccList")).getItems().add(rs.getString("cc"));
+                ((ListView<String>)nodesObjects.get("ccList")).getItems().add(rs.getString("cc"));
             }
         } catch (SQLException e){
-            System.err.println("SQLite error: \n\t" + e);
+            System.err.println("SQLite POPULATE List CC Options  error: \n\t" + e);
         }
     }
 
+    /**
+     * Set selected CC metadata on left Form (Edit)
+     */
     private void setSelectedCcData() {
-        String selectedCc = (String) ((ListView)nodesObjects.get("ccList")).getSelectionModel().getSelectedItem();
+        String selectedCc = (String) ((ListView<?>)nodesObjects.get("ccList")).getSelectionModel().getSelectedItem();
 
         try {
             ResultSet rs = Body.dbConn.getCcs(selectedCc);
@@ -146,25 +176,35 @@ public class CcForm extends GridPane {
         }
     }
 
+    /**
+     * Set CcForm on edit
+     */
     private void onEdit() {
         onEdit = true;
+
         saveBtn.setText("Aggiorna");
         ((Label)nodesObjects.get("ccFormTitle")).setText("Modifica CC");
 
         btnGroupRight.getChildren().remove(editBtn);
         btnGroupRight.getChildren().add(removeBtn);
 
-        ((ListView)nodesObjects.get("ccList")).getSelectionModel().select(0);
+        ((ListView<?>)nodesObjects.get("ccList")).getSelectionModel().select(0);
         setSelectedCcData();
     }
 
+    /**
+     * This method is used to exit from edit mode
+     * and to close the CcForm view
+     */
     public void close() {
         if(onEdit) {
             onEdit = false;
+
             saveBtn.setText("Salva");
             ((Label)nodesObjects.get("ccFormTitle")).setText("Inserimento CC");
             ((ListView)nodesObjects.get("ccList")).getSelectionModel().clearSelection();
 
+            //Clear form input fields
             ((TextField)nodesObjects.get("ccInput")).setText("");
             ((TextField)nodesObjects.get("descrizioneInput")).setText("");
 
