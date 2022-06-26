@@ -23,6 +23,9 @@ public class Home extends GridPane {
         setStruct();
     }
 
+    /**
+     * Set Home structure
+     */
     private void setStruct(){
         ColumnConstraints mainColumn = new ColumnConstraints();
         RowConstraints headerRow = new RowConstraints();

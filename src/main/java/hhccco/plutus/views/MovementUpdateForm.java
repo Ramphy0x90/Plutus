@@ -19,18 +19,19 @@ import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.HashMap;
 
+/**
+ * MovementUpdateForm is the view of the form view to update movements
+ */
 public class MovementUpdateForm extends GridPane {
     public int id;
     private Stage stage;
-    private Scene scene;
     private HBox btnGroup;
     public HashMap<String, Node> nodesObjects = new HashMap<>();
-    private String[] optionLabels = {"Movimento", "Versamento", "Prelevamento"};
+    private final String[] optionLabels = {"Movimento", "Versamento", "Prelevamento"};
 
     public MovementUpdateForm() {
         this.setVgap(18);
         this.setPadding(new Insets(10));
-
         this.setAlignment(Pos.CENTER);
 
         setStruct();
@@ -40,9 +41,12 @@ public class MovementUpdateForm extends GridPane {
         stage.show();
     }
 
+    /**
+     * Set MovementUpdateForm structure
+     */
     private void setStruct() {
         stage = new Stage();
-        scene = new Scene(this, 300, 300);
+        Scene scene = new Scene(this, 300, 300);
 
         btnGroup = new HBox();
         btnGroup.setSpacing(15);
@@ -51,6 +55,9 @@ public class MovementUpdateForm extends GridPane {
         stage.setScene(scene);
     }
 
+    /**
+     * Init MovementUpdateForm node objects
+     */
     private void initNodes() {
         for(int i = 0; i < optionLabels.length; i++) {
             int[] indexRef = {0, 2, 3};
@@ -71,6 +78,7 @@ public class MovementUpdateForm extends GridPane {
         ComboBox<String> newDropDown = new ComboBox<>();
         VBox container = new VBox();
 
+        // Populate CC dropdown options from DB
         try {
             ResultSet rs = Body.dbConn.getCcs();
 
@@ -103,6 +111,9 @@ public class MovementUpdateForm extends GridPane {
         this.add(btnGroup, 0, optionLabels.length + 1);
     }
 
+    /**
+     * Set data for the selected movement into the form
+     */
     private void setData() {
         TableView tableData = (TableView) Body.nodesObjects.get("tableData");
         TableDataModel dataModel = (TableDataModel) tableData.getSelectionModel().getSelectedItem();
@@ -117,7 +128,7 @@ public class MovementUpdateForm extends GridPane {
 
         id = dataModel.getId();
         ((TextField) nodesObjects.get("movimentoInput")).setText(dataModel.getMovimento());
-        ((ComboBox) nodesObjects.get("ccInput")).getSelectionModel().select(ccModel.getCc());
+        ((ComboBox<String>) nodesObjects.get("ccInput")).getSelectionModel().select(ccModel.getCc());
         ((TextField) nodesObjects.get("versamentoInput")).setText(Double.toString(dataModel.getVersamento()));
         ((TextField) nodesObjects.get("prelevamentoInput")).setText(Double.toString(dataModel.getPrelevamento()));
     }

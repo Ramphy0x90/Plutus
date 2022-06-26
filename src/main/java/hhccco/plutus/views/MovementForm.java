@@ -2,6 +2,7 @@ package hhccco.plutus.views;
 
 import hhccco.plutus.components.Body;
 import hhccco.plutus.controllers.MovementFormController;
+import hhccco.plutus.interfaces.Struct;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
@@ -20,18 +21,22 @@ import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.HashMap;
 
-public class MovementForm extends GridPane {
+/**
+ * MovementForm is the view of the form view for insert new movements
+ */
+public class MovementForm extends GridPane implements Struct {
     private Stage stage;
-    private Scene scene;
     private HBox btnGroup;
     public LocalDate movementDate;
     public HashMap<String, Node> nodesObjects = new HashMap<>();
-    private String[] optionLabels = {"Movimento", "Versamento", "Prelevamento"};
+    private final String[] optionLabels = {"Movimento", "Versamento", "Prelevamento"};
 
+    /**
+     * @param value this param is used to specify the date of the movement
+     */
     public MovementForm(LocalDate value) {
         this.setVgap(18);
         this.setPadding(new Insets(10));
-
         this.setAlignment(Pos.CENTER);
 
         this.movementDate = value;
@@ -42,9 +47,12 @@ public class MovementForm extends GridPane {
         stage.show();
     }
 
-    private void setStruct() {
+    /**
+     * Set MovementForm structure
+     */
+    public void setStruct() {
+        Scene scene = new Scene(this, 300, 300);
         stage = new Stage();
-        scene = new Scene(this, 300, 300);
 
         btnGroup = new HBox();
         btnGroup.setSpacing(15);
@@ -53,7 +61,10 @@ public class MovementForm extends GridPane {
         stage.setScene(scene);
     }
 
-    private void initNodes() {
+    /**
+     * Init MovementForm node objects
+     */
+    public void initNodes() {
         for(int i = 0; i < optionLabels.length; i++) {
             int[] indexRef = {0, 2, 3};
             Label newLabel = new Label(optionLabels[i]);
@@ -73,6 +84,7 @@ public class MovementForm extends GridPane {
         ComboBox<String> newDropDown = new ComboBox<>();
         VBox container = new VBox();
 
+        // Populate CC dropdown options from DB
         try {
             ResultSet rs = Body.dbConn.getCcs();
 
