@@ -1,7 +1,6 @@
 package hhccco.plutus.controllers;
 
 import hhccco.plutus.components.Body;
-import hhccco.plutus.components.LeftMenu;
 import hhccco.plutus.views.BankForm;
 import hhccco.plutus.views.CcForm;
 import hhccco.plutus.views.MovementForm;
@@ -16,13 +15,14 @@ import javafx.scene.control.TableView;
 import java.util.HashMap;
 
 public class LeftMenuButtonController implements EventHandler<ActionEvent> {
-    private HashMap<String, Node> leftMenuObjects;
+    private final HashMap<String, Node> leftMenuObjects;
 
     public LeftMenuButtonController(HashMap<String, Node> leftMenuObjects) {
         this.leftMenuObjects = leftMenuObjects;
     }
     @Override
     public void handle(ActionEvent actionEvent) {
+        // Get the selected button text
         String btnLabel = ((Button) actionEvent.getSource()).getText();
         TableView tableData = (TableView) Body.nodesObjects.get("tableData");
 

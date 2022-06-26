@@ -22,16 +22,17 @@ public class CcFormController implements EventHandler<ActionEvent> {
 
     @Override
     public void handle(ActionEvent actionEvent) {
+        // Get the selected button text
         String btnLabel = ((Button) actionEvent.getSource()).getText();
+
+        CcModel ccModel = new CcModel(
+                ((TextField) ccForm.nodesObjects.get("ccInput")).getText(),
+                ((TextField) ccForm.nodesObjects.get("descrizioneInput")).getText()
+        );
 
         switch (btnLabel) {
             case "Salva":
                 try {
-                    CcModel ccModel = new CcModel(
-                            ((TextField) ccForm.nodesObjects.get("ccInput")).getText(),
-                            ((TextField) ccForm.nodesObjects.get("descrizioneInput")).getText()
-                    );
-
                     dbConn.insertCc(ccModel);
 
                     ccForm.close();
@@ -40,15 +41,9 @@ public class CcFormController implements EventHandler<ActionEvent> {
                 }
 
                 break;
-
             case "Aggiorna":
                 try {
-                    String oldCc = (String) ((ListView)ccForm.nodesObjects.get("ccList")).getSelectionModel().getSelectedItem();
-
-                    CcModel ccModel = new CcModel(
-                            ((TextField) ccForm.nodesObjects.get("ccInput")).getText(),
-                            ((TextField) ccForm.nodesObjects.get("descrizioneInput")).getText()
-                    );
+                    String oldCc = ((ListView<String>)ccForm.nodesObjects.get("ccList")).getSelectionModel().getSelectedItem();
 
                     dbConn.updateCc(oldCc, ccModel);
                     ccForm.setCcOptions();

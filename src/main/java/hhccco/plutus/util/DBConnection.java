@@ -72,7 +72,7 @@ public class DBConnection {
         String banksTb = "CREATE TABLE banks" +
                 "(name              TEXT        NOT NULL PRIMARY KEY," +
                 "accountNumber      TEXT        NOT NULL," +
-                "accountType        TEXT        NOT NULL)";
+                "accountType        TEXT        )";
 
         String movementTb = "CREATE TABLE movements" +
                 "(date          DATE        NOT NULL," +

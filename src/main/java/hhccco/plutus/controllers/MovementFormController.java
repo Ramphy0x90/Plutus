@@ -28,6 +28,7 @@ public class MovementFormController implements EventHandler<ActionEvent> {
     }
     @Override
     public void handle(ActionEvent actionEvent) {
+        // Get the selected button text
         String btnLabel = ((Button) actionEvent.getSource()).getText();
 
         switch (btnLabel) {
@@ -44,7 +45,7 @@ public class MovementFormController implements EventHandler<ActionEvent> {
                     TableDataModel tableDataModel = new TableDataModel(
                             movementForm.movementDate,
                             ((TextField) movementForm.nodesObjects.get("movimentoInput")).getText(),
-                            ((ComboBox) movementForm.nodesObjects.get("ccInput")).getValue().toString(),
+                            ((ComboBox<String>) movementForm.nodesObjects.get("ccInput")).getValue(),
                             depositValue,
                             withdrawalValue,
                             bankId);
@@ -71,7 +72,7 @@ public class MovementFormController implements EventHandler<ActionEvent> {
                     TableDataModel tableDataModel = new TableDataModel(
                             date.getValue(),
                             ((TextField) movementUpdateForm.nodesObjects.get("movimentoInput")).getText(),
-                            ((ComboBox) movementUpdateForm.nodesObjects.get("ccInput")).getValue().toString(),
+                            ((ComboBox<String>) movementUpdateForm.nodesObjects.get("ccInput")).getValue(),
                             depositValue,
                             withdrawalValue,
                             bankId);

@@ -22,17 +22,18 @@ public class BankFormController implements EventHandler<ActionEvent> {
 
     @Override
     public void handle(ActionEvent actionEvent) {
+        // Get the selected button text
         String btnLabel = ((Button) actionEvent.getSource()).getText();
+
+        BankModel bankModel = new BankModel(
+                ((TextField) bankForm.nodesObjects.get("bankInput")).getText(),
+                ((TextField) bankForm.nodesObjects.get("accountNumberInput")).getText(),
+                ((TextField) bankForm.nodesObjects.get("accountTypeInput")).getText()
+        );
 
         switch (btnLabel) {
             case "Salva":
                 try {
-                    BankModel bankModel = new BankModel(
-                            ((TextField) bankForm.nodesObjects.get("bankInput")).getText(),
-                            ((TextField) bankForm.nodesObjects.get("accountNumberInput")).getText(),
-                            ((TextField) bankForm.nodesObjects.get("accountTypeInput")).getText()
-                    );
-
                     dbConn.insertBank(bankModel);
                     Body.populateBanks();
 
@@ -42,16 +43,9 @@ public class BankFormController implements EventHandler<ActionEvent> {
                 }
 
                 break;
-
             case "Aggiorna":
                 try {
-                    String oldBankId = (String) ((ListView)bankForm.nodesObjects.get("banksList")).getSelectionModel().getSelectedItem();
-
-                    BankModel bankModel = new BankModel(
-                            ((TextField) bankForm.nodesObjects.get("bankInput")).getText(),
-                            ((TextField) bankForm.nodesObjects.get("accountNumberInput")).getText(),
-                            ((TextField) bankForm.nodesObjects.get("accountTypeInput")).getText()
-                    );
+                    String oldBankId = ((ListView<String>)bankForm.nodesObjects.get("banksList")).getSelectionModel().getSelectedItem();
 
                     dbConn.updateBank(oldBankId, bankModel);
                     Body.populateBanks();
@@ -65,7 +59,7 @@ public class BankFormController implements EventHandler<ActionEvent> {
                 break;
             case "Rimuovi":
                 try {
-                    String bankId = (String) ((ListView)bankForm.nodesObjects.get("banksList")).getSelectionModel().getSelectedItem();
+                    String bankId = ((ListView<String>)bankForm.nodesObjects.get("banksList")).getSelectionModel().getSelectedItem();
 
                     dbConn.removeBank(bankId);
                     Body.populateBanks();
