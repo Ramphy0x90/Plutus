@@ -40,7 +40,8 @@ public class DBConnection {
      */
     private void setConnection() throws SQLException {
         String dbPrefix = "jdbc:sqlite:";
-        String dbPath = String.valueOf(Main.class.getResource("database/plutus.db"));
+        //String dbPath = String.valueOf(Main.class.getResource("database/plutus.db"));
+        String dbPath = "./plutus.db";
 
         conn = DriverManager.getConnection(dbPrefix + dbPath);
     }
